@@ -69,7 +69,10 @@ export function TipPage({ storyId }: TipPageProps) {
         try {
           const res = await fetch('/api/confirm-payment', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true'
+            },
             body: JSON.stringify({ payload: response }),
           })
 
@@ -134,7 +137,10 @@ export function TipPage({ storyId }: TipPageProps) {
       // Step 1: Initiate payment on backend
       const initRes = await fetch('/api/initiate-payment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
         body: JSON.stringify({
           storyId,
           authorId: mockStory.authorId,

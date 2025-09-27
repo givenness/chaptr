@@ -4,8 +4,9 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BookOpen, Heart, Clock, User } from "lucide-react"
+import { BookOpen, Heart, Clock, User, MessageCircle } from "lucide-react"
 import Link from "next/link"
+import { mockStories } from "./home-feed"
 
 const mockLibraryData = {
   following: [
@@ -36,31 +37,19 @@ const mockLibraryData = {
   ],
   readingList: [
     {
-      id: "1",
-      title: "The Last Library",
-      author: "maya_writes",
+      ...mockStories.find(story => story.id === "1"), // The Last Library
       progress: 75,
       lastRead: "2 days ago",
-      coverImage: "/book-cover-dystopian-library.jpg",
-      tags: ["dystopian", "romance"],
     },
     {
-      id: "2",
-      title: "Moonlight Academy",
-      author: "starlight_pen",
+      ...mockStories.find(story => story.id === "2"), // Moonlight Academy
       progress: 45,
       lastRead: "1 week ago",
-      coverImage: "/fantasy-academy-moonlight-magic.jpg",
-      tags: ["fantasy", "young adult"],
     },
     {
-      id: "4",
-      title: "The Quantum Café",
-      author: "physics_writer",
+      ...mockStories.find(story => story.id === "6"), // Quantum Café
       progress: 20,
       lastRead: "2 weeks ago",
-      coverImage: "/minimal-sci-fi-book-cover-aesthetic.jpg",
-      tags: ["sci-fi", "philosophy"],
     },
   ],
   recentActivity: [
@@ -124,7 +113,7 @@ export function LibraryPage() {
             {mockLibraryData.readingList.map((story) => (
               <Link key={story.id} href={`/story/${story.id}`} className="block">
                 <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer gradient-card hover-lift">
-                  <CardContent className="p-2">
+                  <CardContent className="p-3 pr-4">
                   <div className="flex gap-2">
                     <img
                       src={
@@ -136,7 +125,7 @@ export function LibraryPage() {
                       alt={story.title}
                       className="w-14 h-18 object-cover rounded-md flex-shrink-0"
                     />
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 pr-2">
                       <h3 className="font-sans font-semibold text-base leading-tight text-balance mb-0.5">{story.title}</h3>
                       <p className="text-xs text-muted-foreground mb-1">by {story.author}</p>
 
@@ -148,7 +137,7 @@ export function LibraryPage() {
                         ))}
                       </div>
 
-                      <div className="mb-1">
+                      <div className="mb-1 max-w-[85%]">
                         <div className="flex items-center justify-between text-xs mb-0.5">
                           <span className="text-muted-foreground">Progress</span>
                           <span className="font-medium">{story.progress}%</span>
@@ -161,7 +150,17 @@ export function LibraryPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Heart className="h-3 w-3" />
+                            {story?.upvotes || 0}
+                          </span>
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <MessageCircle className="h-3 w-3" />
+                            {story?.comments || 0}
+                          </span>
+                        </div>
                         <span className="text-xs text-muted-foreground">Last read {story.lastRead}</span>
                       </div>
                     </div>
@@ -178,7 +177,7 @@ export function LibraryPage() {
           <div className="mini-app-element-gap">
             {mockLibraryData.following.map((author) => (
               <Card key={author.id}>
-                <CardContent className="p-2">
+                <CardContent className="p-3">
                   <div className="flex items-center gap-2">
                     <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <User className="h-5 w-5 text-primary" />
@@ -211,7 +210,7 @@ export function LibraryPage() {
           <div className="mini-app-element-gap">
             {mockLibraryData.recentActivity.map((activity) => (
               <Card key={activity.id}>
-                <CardContent className="p-2">
+                <CardContent className="p-3">
                   <div className="flex items-start gap-2">
                     <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                       {activity.type === "upvote" && <Heart className="h-3 w-3 text-primary" />}

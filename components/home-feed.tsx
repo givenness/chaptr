@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Heart, MessageCircle, Clock, User, Search } from "lucide-react"
 import Link from "next/link"
 
-const mockStories = [
+export const mockStories = [
   {
     id: "1",
     title: "The Last Library",
@@ -216,7 +216,7 @@ export function HomeFeed() {
             sortedStories.map((story) => (
               <Link key={story.id} href={`/story/${story.id}`} className="block">
                 <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer gradient-card hover-lift">
-                  <CardContent className="p-2">
+                  <CardContent className="p-3">
                     <div className="flex gap-2">
                       <img
                         src={story.coverImage || "/placeholder.svg"}

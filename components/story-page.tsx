@@ -8,6 +8,7 @@ import { ArrowLeft, Heart, MessageCircle, DollarSign, User, BookOpen, Share } fr
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { getStoryById, updateStoryStats, type StoredStory } from "@/lib/story-storage"
+import { useAuth } from "@/components/auth-wrapper"
 
 interface StoryPageProps {
   storyId: string
@@ -539,9 +540,15 @@ const mockStories = {
 
 export function StoryPage({ storyId }: StoryPageProps) {
   const router = useRouter()
+  const { user } = useAuth()
   const [story, setStory] = useState<StoredStory | any>(null)
   const [isStoredStory, setIsStoredStory] = useState(false)
   const [isFollowing, setIsFollowing] = useState(false)
+
+  // Determine if current user is the author of this story
+  const currentUserId = user?.address || "demo_user"
+  const isOwnStory = story && story.authorId === currentUserId
+  const backUrl = isOwnStory ? "/profile" : "/"
 
   useEffect(() => {
     // First try to get from localStorage (user published stories)
@@ -597,7 +604,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
         <div className="flex items-center justify-between p-4">
-          <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+          <Link href={backUrl} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-5 w-5" />
             <span>Back</span>
           </Link>

@@ -12,6 +12,7 @@ import { ArrowLeft, Plus, X, Eye, Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { saveStory, fileToBase64 } from "@/lib/story-storage"
+import { useAuth } from "@/components/auth-wrapper"
 
 const GENRE_OPTIONS = [
   "Romance",
@@ -52,12 +53,16 @@ interface Chapter {
 
 export function WriteInterface() {
   const router = useRouter()
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<"story" | "chapter">("story")
   const [isPublishing, setIsPublishing] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
-  // Mock user for writing functionality
-  const mockUser = { id: "mock_user", username: "guest_writer" }
+  // Use authenticated user data (same logic as profile page)
+  const currentUser = {
+    id: user?.address || "demo_user",
+    username: user?.username || "demo_writer"
+  }
 
   // Story state
   const [story, setStory] = useState<Story>({
@@ -161,15 +166,15 @@ export function WriteInterface() {
         coverImageBase64 = await fileToBase64(coverImageFile)
       }
 
-      // Save the story using our storage utility with mock user
+      // Save the story using our storage utility with authenticated user
       const savedStory = saveStory({
         title: story.title,
         description: story.description,
         tags: story.tags,
         language: story.language,
         coverImage: coverImageBase64,
-        authorId: mockUser.id,
-        authorName: mockUser.username,
+        authorId: currentUser.id,
+        authorName: currentUser.username,
         chapterTitle: chapter.title,
         chapterContent: chapter.content,
         wordCount: chapter.wordCount

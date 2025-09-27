@@ -40,6 +40,7 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
   const [authenticationRequired, setAuthenticationRequired] = useState(true)
   const [user, setUser] = useState<AuthUser | null>(null)
 
+
   const signInWithWallet = async () => {
     if (!MiniKit.isInstalled()) {
       console.log("MiniKit not installed")
@@ -51,7 +52,11 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
       setIsAuthenticating(true)
       console.log("Starting wallet authentication...")
 
-      const res = await fetch(`/api/nonce`)
+      const res = await fetch(`/api/nonce`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      })
       const { nonce } = await res.json()
       console.log("Received nonce:", nonce)
 
@@ -76,6 +81,7 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify({
           payload: finalPayload,

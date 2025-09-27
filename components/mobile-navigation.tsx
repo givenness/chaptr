@@ -7,11 +7,11 @@ import Link from "next/link"
 
 const leftNavItems = [
   { icon: Home, label: "Home", href: "/" },
-  { icon: PenTool, label: "Write", href: "/write" },
+  { icon: Library, label: "Library", href: "/library" },
 ]
 
 const rightNavItems = [
-  { icon: Library, label: "Library", href: "/library" },
+  { icon: PenTool, label: "Write", href: "/write" },
   { icon: User, label: "Profile", href: "/profile" },
 ]
 

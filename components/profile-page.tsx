@@ -4,47 +4,12 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { User, BookOpen, Heart, MessageCircle, DollarSign, Shield, Trash2 } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { User, BookOpen, Heart, MessageCircle, DollarSign, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { getUserStories, deleteStory, type StoredStory } from "@/lib/story-storage"
 import { useAuth } from "@/components/auth-wrapper"
 
-const mockStories = [
-  {
-    id: "11",
-    title: "Digital Nomad Chronicles",
-    author: "worldapp_user",
-    authorId: "worldapp_user",
-    excerpt:
-      "Following the journey of a software developer who travels the world while building the next generation of decentralized applications...",
-    tags: ["tech", "travel", "lifestyle"],
-    upvotes: 156,
-    comments: 32,
-    tips: 9.4,
-    timeAgo: "1d ago",
-    coverImage: "/minimalist-laptop-silhouette-with-world-map-backgr.jpg",
-    chapters: 7,
-    status: "ongoing",
-    lastUpdated: "2024-01-21",
-  },
-  {
-    id: "12",
-    title: "The Startup Diaries",
-    author: "worldapp_user",
-    authorId: "worldapp_user",
-    excerpt:
-      "An honest look at the ups and downs of building a tech startup from idea to IPO, including all the failures along the way...",
-    tags: ["business", "entrepreneurship", "tech"],
-    upvotes: 89,
-    comments: 18,
-    tips: 5.2,
-    timeAgo: "3d ago",
-    coverImage: "/minimalist-rocket-launch-silhouette-in-gradient-blu.jpg",
-    chapters: 2,
-    status: "draft",
-    lastUpdated: "2024-01-18",
-  },
-]
 
 export function ProfilePage() {
   const { user } = useAuth()
@@ -58,6 +23,9 @@ export function ProfilePage() {
 
   const [activeTab, setActiveTab] = useState<"stories" | "stats" | "settings">("stories")
   const [userStories, setUserStories] = useState<StoredStory[]>([])
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [storyToDelete, setStoryToDelete] = useState<{id: string, title: string} | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     const stories = getUserStories(currentUser.id)
@@ -65,15 +33,32 @@ export function ProfilePage() {
   }, [currentUser.id])
 
   const handleDeleteStory = (storyId: string, storyTitle: string) => {
-    if (window.confirm(`Are you sure you want to delete "${storyTitle}"? This action cannot be undone.`)) {
-      const success = deleteStory(storyId)
+    setStoryToDelete({ id: storyId, title: storyTitle })
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDeleteStory = async () => {
+    if (!storyToDelete) return
+
+    setIsDeleting(true)
+    try {
+      const success = deleteStory(storyToDelete.id)
       if (success) {
         // Refresh the stories list
         const updatedStories = getUserStories(currentUser.id)
         setUserStories(updatedStories)
+        console.log(`Story "${storyToDelete.title}" deleted successfully`)
       } else {
+        console.error('Failed to delete story')
         alert('Failed to delete story. Please try again.')
       }
+    } catch (error) {
+      console.error('Error deleting story:', error)
+      alert('An error occurred while deleting the story. Please try again.')
+    } finally {
+      setIsDeleting(false)
+      setDeleteDialogOpen(false)
+      setStoryToDelete(null)
     }
   }
 
@@ -109,12 +94,6 @@ export function ProfilePage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
                   <h2 className="text-xl font-sans font-semibold">{currentUser.username}</h2>
-                  {currentUser.isVerified && (
-                    <div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded-full">
-                      <Shield className="h-3 w-3 text-primary" />
-                      <span className="text-xs text-primary font-medium">Verified</span>
-                    </div>
-                  )}
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">
                   Joined {new Date(userStats.joinedDate).toLocaleDateString()}
@@ -190,64 +169,68 @@ export function ProfilePage() {
             ) : (
               <div className="mini-app-element-gap">
                 {userStories.map((story) => (
-                  <Card key={story.id} className="overflow-hidden hover:shadow-md transition-shadow">
-                    <CardContent className="mini-app-padding">
-                      <div className="flex gap-4">
+                  <Card key={story.id} className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer gradient-card hover-lift">
+                    <CardContent className="p-3">
+                      <div className="flex gap-2">
                         <Link href={`/story/${story.id}`} className="contents">
-                          <div className="flex-shrink-0">
-                            {story.coverImage ? (
-                              <img
-                                src={story.coverImage}
-                                alt={story.title}
-                                className="w-16 h-20 object-cover rounded-lg border border-border/50 cursor-pointer"
-                              />
-                            ) : (
-                              <div className="w-16 h-20 bg-muted rounded-lg border border-border/50 flex items-center justify-center cursor-pointer">
-                                <BookOpen className="h-6 w-6 text-muted-foreground" />
-                              </div>
-                            )}
-                          </div>
+                          {story.coverImage ? (
+                            <img
+                              src={story.coverImage}
+                              alt={story.title}
+                              className="w-16 h-20 object-cover rounded-md flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-16 h-20 bg-muted rounded-md flex items-center justify-center flex-shrink-0">
+                              <BookOpen className="h-6 w-6 text-muted-foreground" />
+                            </div>
+                          )}
                         </Link>
-                        <div className="flex-1 min-w-0 space-y-3">
-                          <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-0.5">
                             <Link href={`/story/${story.id}`} className="flex-1">
-                              <h4 className="font-sans font-semibold text-lg leading-tight text-balance cursor-pointer hover:text-primary">
+                              <h3 className="font-sans font-semibold text-base leading-tight text-balance">
                                 {story.title}
-                              </h4>
+                              </h3>
                             </Link>
                             <button
                               onClick={(e) => {
                                 e.preventDefault()
+                                e.stopPropagation()
                                 handleDeleteStory(story.id, story.title)
                               }}
-                              className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                              className="text-muted-foreground hover:text-destructive transition-colors p-0.5"
                               title="Delete story"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3" />
                             </button>
                           </div>
+
                           <Link href={`/story/${story.id}`} className="block">
-                            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 text-pretty cursor-pointer">
+                            <p className="text-xs text-muted-foreground mb-1.5 line-clamp-2 text-pretty">
                               {story.description}
                             </p>
-                            <div className="flex flex-wrap gap-1.5 mt-3">
+
+                            <div className="flex flex-wrap gap-0.5 mb-1.5">
                               {story.tags.map((tag) => (
-                                <Badge key={tag} variant="outline" className="text-xs px-2 py-0.5">
+                                <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
                                   {tag}
                                 </Badge>
                               ))}
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1 mt-3">
-                              <span className="font-medium">{story.chapters.length} chapters</span>
-                              <div className="flex items-center gap-1">
-                                <Heart className="h-3.5 w-3.5" />
-                                <span>{story.stats.likes}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <MessageCircle className="h-3.5 w-3.5" />
-                                <span>{story.stats.views}</span>
-                              </div>
-                              <span className="text-xs">{story.stats.totalWords} words</span>
+
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <span className="font-medium">
+                                {story.chapters.length} {story.chapters.length === 1 ? 'chapter' : 'chapters'}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Heart className="h-3 w-3" />
+                                {story.stats.likes}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <MessageCircle className="h-3 w-3" />
+                                {story.stats.views}
+                              </span>
+                              <span>{story.stats.totalWords} words</span>
                             </div>
                           </Link>
                         </div>
@@ -393,6 +376,39 @@ export function ProfilePage() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="font-sans">Delete Story</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground">
+              Are you sure you want to delete <strong>"{storyToDelete?.title}"</strong>?
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              This action cannot be undone. The story and all its chapters will be permanently removed.
+            </p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteStory}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Story'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
