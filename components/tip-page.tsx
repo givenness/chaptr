@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,14 @@ import { ArrowLeft, Heart, Coins, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { formatCurrency } from "@/lib/currency"
+import {
+  MiniKit,
+  tokenToDecimals,
+  Tokens,
+  PayCommandInput,
+  ResponseEvent,
+  MiniAppPaymentPayload
+} from "@worldcoin/minikit-js"
 
 interface TipPageProps {
   storyId: string
@@ -42,7 +50,58 @@ export function TipPage({ storyId }: TipPageProps) {
   const [customAmount, setCustomAmount] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
   const [message, setMessage] = useState("")
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'initiating' | 'pending' | 'success' | 'failed'>('idle')
   const paymentsEnabled = isPaymentsEnabled()
+
+  // Set up MiniKit payment event listener
+  useEffect(() => {
+    if (!MiniKit.isInstalled()) {
+      console.error("MiniKit is not installed")
+      return
+    }
+
+    const handlePaymentResponse = async (response: MiniAppPaymentPayload) => {
+      console.log('Payment response received:', response)
+
+      if (response.status === "success") {
+        setPaymentStatus('pending')
+
+        try {
+          const res = await fetch('/api/confirm-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ payload: response }),
+          })
+
+          const result = await res.json()
+
+          if (result.success) {
+            setPaymentStatus('success')
+            setTimeout(() => {
+              router.push(`/story/${storyId}`)
+            }, 2000)
+          } else {
+            setPaymentStatus('failed')
+            console.error('Payment verification failed:', result.error)
+          }
+        } catch (error) {
+          setPaymentStatus('failed')
+          console.error('Error confirming payment:', error)
+        }
+      } else {
+        setPaymentStatus('failed')
+        console.error('Payment failed:', response)
+      }
+
+      setIsProcessing(false)
+    }
+
+    MiniKit.subscribe(ResponseEvent.MiniAppPayment, handlePaymentResponse)
+
+    return () => {
+      MiniKit.unsubscribe(ResponseEvent.MiniAppPayment)
+    }
+  }, [storyId, router])
 
   const handlePresetAmount = (preset: number) => {
     setAmount(preset.toString())
@@ -64,20 +123,55 @@ export function TipPage({ storyId }: TipPageProps) {
   }
 
   const handleTip = async () => {
-    if (!isValidAmount() || !paymentsEnabled) return
+    if (!isValidAmount() || !paymentsEnabled || !MiniKit.isInstalled()) return
 
     setIsProcessing(true)
+    setPaymentStatus('initiating')
+
     try {
       const tipAmount = getCurrentAmount()
 
-      // Simulate successful tip without actual payment processing
-      console.log("Tip simulated:", { amount: tipAmount, to: mockStory.author })
-      alert(`Successfully tipped ${formatCurrency(tipAmount, selectedToken)} to ${mockStory.author}!`)
-      router.push(`/story/${storyId}`)
+      // Step 1: Initiate payment on backend
+      const initRes = await fetch('/api/initiate-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          storyId,
+          authorId: mockStory.authorId,
+          amount: tipAmount.toString(),
+          token: selectedToken,
+          message: message.trim() || undefined
+        }),
+      })
+
+      if (!initRes.ok) {
+        throw new Error('Failed to initiate payment')
+      }
+
+      const { id: paymentId } = await initRes.json()
+
+      // Step 2: Create payment payload for MiniKit
+      const payload: PayCommandInput = {
+        reference: paymentId,
+        to: mockStory.authorId, // This should be the author's wallet address
+        tokens: [
+          {
+            symbol: Tokens.WLD,
+            token_amount: tokenToDecimals(tipAmount, Tokens.WLD).toString(),
+          },
+        ],
+        description: `Tip for "${mockStory.title}"${message ? ` - ${message}` : ''}`,
+      }
+
+      // Step 3: Send payment command to MiniKit
+      console.log('Sending payment command:', payload)
+      MiniKit.commands.pay(payload)
+
+      // Note: The actual payment confirmation happens in the event listener
+
     } catch (error) {
-      console.error("Tip failed:", error)
-      alert("Failed to process tip. Please try again.")
-    } finally {
+      console.error("Failed to initiate tip:", error)
+      setPaymentStatus('failed')
       setIsProcessing(false)
     }
   }
@@ -265,10 +359,63 @@ export function TipPage({ storyId }: TipPageProps) {
           </CardContent>
         </Card>
 
+        {/* Payment Status */}
+        {paymentStatus !== 'idle' && (
+          <Card className="mb-6">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                {paymentStatus === 'initiating' && (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <p className="text-sm text-muted-foreground">Initiating payment...</p>
+                  </div>
+                )}
+                {paymentStatus === 'pending' && (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p className="text-sm text-blue-600">Verifying payment...</p>
+                  </div>
+                )}
+                {paymentStatus === 'success' && (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                      <Heart className="h-5 w-5 text-green-600" />
+                    </div>
+                    <p className="text-sm text-green-600 font-medium">Payment successful!</p>
+                    <p className="text-xs text-muted-foreground">Redirecting to story...</p>
+                  </div>
+                )}
+                {paymentStatus === 'failed' && (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <AlertCircle className="h-5 w-5 text-red-600" />
+                    </div>
+                    <p className="text-sm text-red-600 font-medium">Payment failed</p>
+                    <p className="text-xs text-muted-foreground">Please try again</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPaymentStatus('idle')}
+                      className="mt-2"
+                    >
+                      Try Again
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Tip Button */}
         <Card>
           <CardContent className="pt-6">
-            <Button onClick={handleTip} disabled={!isValidAmount() || isProcessing} className="w-full" size="lg">
+            <Button
+              onClick={handleTip}
+              disabled={!isValidAmount() || isProcessing || paymentStatus !== 'idle'}
+              className="w-full"
+              size="lg"
+            >
               {isProcessing ? (
                 "Processing..."
               ) : (
