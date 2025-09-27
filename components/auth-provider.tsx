@@ -83,32 +83,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkExistingSession = async () => {
     try {
-      // Check if user has existing session
+      // Check if user has existing session from localStorage
       const savedUser = localStorage.getItem("chaptr_user")
       if (savedUser) {
         setUser(JSON.parse(savedUser))
-      } else {
-        // Automatically create a demo user if no session exists
-        const autoUser: User = {
-          id: "auto_user_123",
-          username: "demo_user",
-          walletAddress: "0x1234567890123456789012345678901234567890",
-          isVerified: false,
-        }
-        setUser(autoUser)
-        localStorage.setItem("chaptr_user", JSON.stringify(autoUser))
-        console.log("[v0] Auto-signed in demo user")
       }
+      // No automatic user creation - users must explicitly login
     } catch (error) {
       console.error("Error checking session:", error)
-      // Even if there's an error, create a demo user
-      const fallbackUser: User = {
-        id: "fallback_user_123",
-        username: "demo_user",
-        walletAddress: "0x1234567890123456789012345678901234567890",
-        isVerified: false,
-      }
-      setUser(fallbackUser)
     } finally {
       setIsLoading(false)
     }
@@ -117,36 +99,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async () => {
     try {
       setIsLoading(true)
-      console.log("[v0] Starting login process...")
 
       if (!isWorldApp) {
-        console.log("[v0] Using mock authentication for development")
-        const mockUser: User = {
-          id: "mock_user_123",
-          username: "demo_user",
-          walletAddress: "0x1234567890123456789012345678901234567890",
-          isVerified: false,
-        }
-        setUser(mockUser)
-        localStorage.setItem("chaptr_user", JSON.stringify(mockUser))
-        console.log("[v0] Mock login successful")
-        return
+        throw new Error("Login is only available in World App environment")
       }
 
-      console.log("[v0] World App detected but MiniKit not available in this environment")
-      console.log("[v0] Using fallback authentication")
+      // TODO: Implement actual MiniKit authentication
+      // const result = await MiniKit.signIn()
+      throw new Error("MiniKit integration required for authentication")
 
-      const fallbackUser: User = {
-        id: "worldapp_user_123",
-        username: "worldapp_user",
-        walletAddress: "0x1111111111111111111111111111111111111111",
-        isVerified: false,
-      }
-      setUser(fallbackUser)
-      localStorage.setItem("chaptr_user", JSON.stringify(fallbackUser))
-      console.log("[v0] Fallback login successful")
     } catch (error) {
       console.error("Login failed:", error)
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -159,25 +123,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const verify = async (action: string): Promise<string | null> => {
     try {
-      console.log("[v0] Starting verification for action:", action)
-
       if (!isWorldApp) {
-        console.log("[v0] Using mock verification for development")
-        if (user) {
-          const updatedUser = { ...user, isVerified: true }
-          setUser(updatedUser)
-          localStorage.setItem("chaptr_user", JSON.stringify(updatedUser))
-        }
-        return "mock_nullifier_hash_123"
+        throw new Error("World ID verification is only available in World App environment")
       }
 
-      console.log("[v0] World App verification not available, using fallback")
-      if (user) {
-        const updatedUser = { ...user, isVerified: true }
-        setUser(updatedUser)
-        localStorage.setItem("chaptr_user", JSON.stringify(updatedUser))
+      if (!user) {
+        throw new Error("User must be logged in to verify")
       }
-      return "worldapp_nullifier_hash_123"
+
+      // TODO: Implement actual World ID verification
+      // const result = await MiniKit.verifyWorldId({ action })
+      throw new Error("MiniKit integration required for World ID verification")
+
     } catch (error) {
       console.error("Verification failed:", error)
       return null
@@ -192,12 +149,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }) => {
     try {
       if (!isWorldApp) {
-        console.log("[v0] Mock payment:", params)
-        return { status: "success", transaction_id: "mock_tx_123" }
+        throw new Error("Payments are only available in World App environment")
       }
 
-      console.log("[v0] World App payment:", params)
-      return { status: "success", transaction_id: "worldapp_tx_123" }
+      if (!user) {
+        throw new Error("User must be logged in to make payments")
+      }
+
+      // TODO: Implement actual MiniKit payment
+      // const result = await MiniKit.pay(params)
+      throw new Error("MiniKit integration required for payments")
+
     } catch (error) {
       console.error("Payment failed:", error)
       throw error
