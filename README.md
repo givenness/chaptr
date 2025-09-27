@@ -4,7 +4,7 @@
 
 A World Mini App for user‑generated serialized fiction: verified authors publish stories in chapters; readers follow, upvote, comment, and tip authors. 
 
-## ✨ Features
+## Features
 
 - **🔐 World ID Authentication** - Secure authentication using Worldcoin's MiniKit
 - **📚 Story Publishing** - Create and publish stories
@@ -91,7 +91,7 @@ A World Mini App for user‑generated serialized fiction: verified authors publi
    DEV_PORTAL_API_KEY=your_dev_portal_api_key
    ```
 
-## 📞 Support
+## Support
 
 - **Documentation**: [Worldcoin MiniKit Docs](https://docs.worldcoin.org/minikit)
 - **Community**: [Worldcoin Discord](https://discord.gg/worldcoin)
@@ -99,4 +99,4 @@ A World Mini App for user‑generated serialized fiction: verified authors publi
 
 ---
 
-Built with ❤️ for the World App ecosystem
+Built with 📚 for World 
