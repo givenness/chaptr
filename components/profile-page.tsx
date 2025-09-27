@@ -68,18 +68,18 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between mini-app-padding py-6">
           <h1 className="text-2xl font-serif font-bold">Profile</h1>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto mini-app-padding mini-app-header-gap">
         {/* Profile Header */}
-        <Card className="mb-6">
-          <CardContent className="pt-6">
+        <Card className="mini-app-header-gap">
+          <CardContent className="mini-app-padding">
             <div className="flex items-start gap-4">
               <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <User className="h-8 w-8 text-primary" />
@@ -114,7 +114,7 @@ export function ProfilePage() {
         </Card>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mini-app-header-gap">
           <Button
             variant={activeTab === "stories" ? "default" : "outline"}
             onClick={() => setActiveTab("stories")}
@@ -140,7 +140,7 @@ export function ProfilePage() {
 
         {/* Stories Tab */}
         {activeTab === "stories" && (
-          <div className="space-y-4">
+          <div className="mini-app-element-gap">
             <div className="flex items-center justify-between">
               <h3 className="font-serif font-semibold">Published Stories</h3>
               <Link href="/write">
@@ -166,11 +166,11 @@ export function ProfilePage() {
                 </Link>
               </Card>
             ) : (
-              <div className="space-y-4">
+              <div className="mini-app-element-gap">
                 {userStories.map((story) => (
                   <Link key={story.id} href={`/story/${story.id}`} className="block">
                     <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-                      <CardContent className="p-6">
+                      <CardContent className="mini-app-padding">
                         <div className="flex gap-4">
                           <div className="flex-shrink-0">
                             <img
@@ -215,10 +215,6 @@ export function ProfilePage() {
                                 <MessageCircle className="h-3.5 w-3.5" />
                                 <span>{story.comments}</span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <DollarSign className="h-3.5 w-3.5" />
-                                <span>{formatCurrencyShort(story.tips)}</span>
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -233,9 +229,9 @@ export function ProfilePage() {
 
         {/* Stats Tab */}
         {activeTab === "stats" && (
-          <div className="space-y-6">
+          <div className="mini-app-section-gap">
             <div className="grid grid-cols-2 gap-3">
-              <Card className="p-4">
+              <Card className="mini-app-padding">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Upvotes</p>
@@ -247,7 +243,7 @@ export function ProfilePage() {
                 </div>
               </Card>
 
-              <Card className="p-4">
+              <Card className="mini-app-padding">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Comments</p>
@@ -259,7 +255,7 @@ export function ProfilePage() {
                 </div>
               </Card>
 
-              <Card className="p-4">
+              <Card className="mini-app-padding">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Tips Received</p>
@@ -271,7 +267,7 @@ export function ProfilePage() {
                 </div>
               </Card>
 
-              <Card className="p-4">
+              <Card className="mini-app-padding">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -286,7 +282,7 @@ export function ProfilePage() {
               </Card>
             </div>
 
-            <Card className="p-6">
+            <Card className="mini-app-padding">
               <h3 className="font-serif font-semibold mb-4">Engagement Overview</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
@@ -313,12 +309,12 @@ export function ProfilePage() {
 
         {/* Settings Tab */}
         {activeTab === "settings" && (
-          <div className="space-y-4">
+          <div className="mini-app-element-gap">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg font-serif">Account Settings</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="mini-app-element-gap">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-medium">World ID Verification</h4>
@@ -355,7 +351,7 @@ export function ProfilePage() {
               <CardHeader>
                 <CardTitle className="text-lg font-serif">Danger Zone</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="mini-app-element-gap">
                 <Button onClick={logout} variant="outline" className="w-full bg-transparent">
                   Sign Out
                 </Button>

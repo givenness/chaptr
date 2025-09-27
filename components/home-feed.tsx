@@ -182,17 +182,17 @@ export function HomeFeed() {
   })
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="p-4">
+        <div className="mini-app-padding py-6">
           <h1 className="text-2xl font-serif font-bold">Home</h1>
-          <p className="text-sm text-muted-foreground">Stories by verified humans, for curious minds</p>
+          <p className="text-sm text-muted-foreground mt-2">Stories by verified humans, for curious minds</p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        <div className="relative mb-6">
+      <div className="max-w-2xl mx-auto mini-app-padding mini-app-header-gap">
+        <div className="relative mini-app-header-gap">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search by genre (e.g., fantasy, sci-fi, romance)..."
@@ -202,7 +202,7 @@ export function HomeFeed() {
           />
         </div>
 
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mini-app-header-gap">
           <Button
             variant={activeTab === "trending" ? "default" : "outline"}
             onClick={() => setActiveTab("trending")}
@@ -231,8 +231,8 @@ export function HomeFeed() {
             sortedStories.map((story) => (
               <Link key={story.id} href={`/story/${story.id}`} className="block">
                 <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-                  <CardContent className="p-0">
-                    <div className="flex p-4 gap-4">
+                  <CardContent className="mini-app-padding">
+                    <div className="flex gap-4">
                       <img
                         src={story.coverImage || "/placeholder.svg"}
                         alt={story.title}
@@ -269,7 +269,6 @@ export function HomeFeed() {
                             <MessageCircle className="h-4 w-4" />
                             {story.comments}
                           </span>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">{story.tips} WLD</div>
                         </div>
                       </div>
                     </div>

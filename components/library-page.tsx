@@ -98,18 +98,18 @@ export function LibraryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="p-4">
+        <div className="mini-app-padding py-6">
           <h1 className="text-2xl font-serif font-bold">Your Library</h1>
-          <p className="text-sm text-muted-foreground">Your reading progress and followed authors</p>
+          <p className="text-sm text-muted-foreground mt-2">Your reading progress and followed authors</p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto mini-app-padding mini-app-header-gap">
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mini-app-header-gap">
           <Button
             variant={activeTab === "reading" ? "default" : "outline"}
             onClick={() => setActiveTab("reading")}
@@ -135,10 +135,10 @@ export function LibraryPage() {
 
         {/* Reading List Tab */}
         {activeTab === "reading" && (
-          <div className="space-y-4">
+          <div className="mini-app-element-gap">
             {mockLibraryData.readingList.map((story) => (
               <Card key={story.id}>
-                <CardContent className="p-4">
+                <CardContent className="mini-app-padding">
                   <div className="flex gap-4">
                     <img
                       src={
@@ -193,10 +193,10 @@ export function LibraryPage() {
 
         {/* Following Tab */}
         {activeTab === "following" && (
-          <div className="space-y-4">
+          <div className="mini-app-element-gap">
             {mockLibraryData.following.map((author) => (
               <Card key={author.id}>
-                <CardContent className="p-4">
+                <CardContent className="mini-app-padding">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <User className="h-6 w-6 text-primary" />
@@ -226,10 +226,10 @@ export function LibraryPage() {
 
         {/* Activity Tab */}
         {activeTab === "activity" && (
-          <div className="space-y-4">
+          <div className="mini-app-element-gap">
             {mockLibraryData.recentActivity.map((activity) => (
               <Card key={activity.id}>
-                <CardContent className="p-4">
+                <CardContent className="mini-app-padding">
                   <div className="flex items-start gap-3">
                     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
                       {activity.type === "upvote" && <Heart className="h-4 w-4 text-primary" />}

@@ -133,32 +133,27 @@ export function WriteInterface() {
     chapter.wordCount >= 100
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="p-4">
+        <div className="mini-app-padding py-6">
           <h1 className="text-2xl font-serif font-bold">Write</h1>
-          <p className="text-sm text-muted-foreground">Create and publish your stories</p>
+          <p className="text-sm text-muted-foreground mt-2">Create and publish your stories</p>
         </div>
-        <div className="flex items-center justify-between px-4 pb-4">
+        <div className="flex items-center justify-between mini-app-padding pb-6">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-5 w-5" />
             <span>Back</span>
           </Link>
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-              <span className="text-primary-foreground font-bold text-sm">c</span>
-            </div>
-          </Link>
-          <Button onClick={handlePublish} disabled={!canPublish || isPublishing} size="sm">
+          <Button onClick={handlePublish} disabled={!canPublish || isPublishing} size="sm" className="mb-6">
             {isPublishing ? "Publishing..." : "Publish"}
           </Button>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto mini-app-padding mini-app-header-gap">
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mini-app-header-gap">
           <Button
             variant={activeTab === "story" ? "default" : "outline"}
             onClick={() => setActiveTab("story")}
@@ -180,9 +175,9 @@ export function WriteInterface() {
             <CardHeader>
               <CardTitle className="font-serif">Story Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="mini-app-padding mini-app-section-gap">
               {/* Title */}
-              <div className="space-y-2">
+              <div className="mini-app-element-gap">
                 <Label htmlFor="title">Story Title *</Label>
                 <Input
                   id="title"
@@ -194,7 +189,7 @@ export function WriteInterface() {
               </div>
 
               {/* Description */}
-              <div className="space-y-2">
+              <div className="mini-app-element-gap">
                 <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
@@ -207,7 +202,7 @@ export function WriteInterface() {
               </div>
 
               {/* Language */}
-              <div className="space-y-2">
+              <div className="mini-app-element-gap">
                 <Label htmlFor="language">Language</Label>
                 <select
                   id="language"
@@ -224,7 +219,7 @@ export function WriteInterface() {
               </div>
 
               {/* Tags */}
-              <div className="space-y-2">
+              <div className="mini-app-element-gap">
                 <Label>Tags (up to 5)</Label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {story.tags.map((tag) => (
@@ -243,7 +238,7 @@ export function WriteInterface() {
                       placeholder="Add a tag"
                       value={newTag}
                       onChange={(e) => setNewTag(e.target.value)}
-                      onKeyPress={(e) => e.key === "Enter" && addTag()}
+                      onKeyDown={(e) => e.key === "Enter" && addTag()}
                       className="flex-1"
                     />
                     <Button onClick={addTag} size="sm" variant="outline">
@@ -275,7 +270,7 @@ export function WriteInterface() {
               </div>
 
               {/* Cover Image */}
-              <div className="space-y-2">
+              <div className="mini-app-element-gap">
                 <Label>Cover Image (Optional)</Label>
                 <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                   <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
@@ -292,9 +287,9 @@ export function WriteInterface() {
             <CardHeader>
               <CardTitle className="font-serif">First Chapter</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="mini-app-padding mini-app-section-gap">
               {/* Chapter Title */}
-              <div className="space-y-2">
+              <div className="mini-app-element-gap">
                 <Label htmlFor="chapter-title">Chapter Title *</Label>
                 <Input
                   id="chapter-title"
@@ -306,7 +301,7 @@ export function WriteInterface() {
               </div>
 
               {/* Chapter Content */}
-              <div className="space-y-2">
+              <div className="mini-app-element-gap">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="chapter-content">Chapter Content *</Label>
                   <span className="text-sm text-muted-foreground">
@@ -333,10 +328,13 @@ Remember: This is your first chapter, make it compelling!"
               </div>
 
               {/* Preview Button */}
-              <Button variant="outline" className="w-full bg-transparent">
+              <Button variant="outline" className="w-full bg-transparent mb-6">
                 <Eye className="h-4 w-4 mr-2" />
                 Preview Chapter
               </Button>
+
+              {/* Bottom padding for mobile navigation */}
+              <div className="h-6"></div>
             </CardContent>
           </Card>
         )}
