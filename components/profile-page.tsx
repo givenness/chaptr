@@ -91,14 +91,7 @@ export function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
-      {/* Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="flex items-center justify-between mini-app-padding py-6">
-          <h1 className="text-2xl font-serif font-bold">Profile</h1>
-        </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '24px' }}>
+      <div className="max-w-2xl mx-auto mini-app-padding pt-6">
         {/* Profile Header */}
         <Card className="mini-app-header-gap">
           <CardContent className="mini-app-padding">

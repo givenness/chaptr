@@ -220,15 +220,7 @@ export function WriteInterface() {
 
   return (
     <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
-      {/* Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="mini-app-padding py-6">
-          <h1 className="text-2xl font-serif font-bold">Write</h1>
-          <p className="text-sm text-muted-foreground mt-2">Create and publish your stories</p>
-        </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '24px' }}>
+      <div className="max-w-2xl mx-auto mini-app-padding pt-6">
         {/* Action buttons */}
         <div className="flex items-center justify-between mini-app-header-gap">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">

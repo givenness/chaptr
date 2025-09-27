@@ -183,15 +183,7 @@ export function HomeFeed() {
 
   return (
     <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
-      {/* Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="mini-app-padding py-6">
-          <h1 className="text-2xl font-serif font-bold">Home</h1>
-          <p className="text-sm text-muted-foreground mt-2">Stories by verified humans, for curious minds</p>
-        </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '24px' }}>
+      <div className="max-w-2xl mx-auto mini-app-padding pt-6">
         <div className="relative mini-app-header-gap">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
