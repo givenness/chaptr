@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/components/auth-provider"
 import { AuthPrompt } from "@/components/auth-prompt"
-import { ArrowLeft, DollarSign, Heart, Coins, AlertCircle } from "lucide-react"
+import { ArrowLeft, Heart, Coins, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { formatCurrency } from "@/lib/currency"
@@ -40,7 +40,7 @@ const isPaymentsEnabled = () => {
 export function TipPage({ storyId }: TipPageProps) {
   const { user, pay } = useAuth()
   const router = useRouter()
-  const [selectedToken, setSelectedToken] = useState<"WLD" | "USDC">("WLD")
+  const selectedToken = "WLD"
   const [amount, setAmount] = useState("")
   const [customAmount, setCustomAmount] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
@@ -182,7 +182,7 @@ export function TipPage({ storyId }: TipPageProps) {
                 <h2 className="font-sans font-semibold text-lg text-balance mb-1">{mockStory.title}</h2>
                 <p className="text-muted-foreground mb-2">by {mockStory.author}</p>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <DollarSign className="h-4 w-4" />
+                  <Coins className="h-4 w-4" />
                   <span>{mockStory.totalTips} WLD total tips received</span>
                 </div>
               </div>
@@ -193,43 +193,19 @@ export function TipPage({ storyId }: TipPageProps) {
         {/* Token Selection */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-sans">Choose Token</CardTitle>
+            <CardTitle className="font-sans">Tipping with Worldcoin</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => setSelectedToken("WLD")}
-                className={`p-4 rounded-lg border-2 transition-colors ${
-                  selectedToken === "WLD" ? "border-primary bg-primary/5" : "border-border hover:border-border/80"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Coins className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <p className="font-medium">WLD</p>
-                    <p className="text-sm text-muted-foreground">Worldcoin</p>
-                  </div>
+            <div className="p-4 rounded-lg border-2 border-primary bg-primary/5">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Coins className="h-5 w-5 text-primary" />
                 </div>
-              </button>
-
-              <button
-                onClick={() => setSelectedToken("USDC")}
-                className={`p-4 rounded-lg border-2 transition-colors ${
-                  selectedToken === "USDC" ? "border-primary bg-primary/5" : "border-border hover:border-border/80"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <DollarSign className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <p className="font-medium">USDC</p>
-                    <p className="text-sm text-muted-foreground">USD Coin</p>
-                  </div>
+                <div className="text-left">
+                  <p className="font-medium">WLD</p>
+                  <p className="text-sm text-muted-foreground">Worldcoin</p>
                 </div>
-              </button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -266,7 +242,7 @@ export function TipPage({ storyId }: TipPageProps) {
                 Custom Amount
               </Label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Coins className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="custom-amount"
                   type="number"
@@ -332,23 +308,6 @@ export function TipPage({ storyId }: TipPageProps) {
           </CardContent>
         </Card>
 
-        {/* Info Card */}
-        <Card className="mt-6 border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <div className="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs text-white font-bold">i</span>
-              </div>
-              <div>
-                <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-1">About Tipping</h4>
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  Tips go directly to authors to support their creative work. All transactions are verified on-chain and
-                  gas fees are sponsored by the platform.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   )
