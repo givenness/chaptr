@@ -1,4 +1,4 @@
-# Chaptr
+# chaptr
 
 A mobile‑first World Mini App for user‑generated serialized fiction
 
