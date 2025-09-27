@@ -98,7 +98,7 @@ export function ProfilePage() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto mini-app-padding mini-app-header-gap">
+      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '48px' }}>
         {/* Profile Header */}
         <Card className="mini-app-header-gap">
           <CardContent className="mini-app-padding">
