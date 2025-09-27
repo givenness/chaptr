@@ -639,7 +639,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
             </div>
 
             <div className="flex flex-wrap gap-1 mb-4">
-              {story.tags.map((tag) => (
+              {story.tags.map((tag: string) => (
                 <Badge key={tag} variant="secondary" className="text-xs">
                   {tag}
                 </Badge>
@@ -693,7 +693,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
             </div>
 
             <div className="space-y-3">
-              {story.chapters.map((chapter, index) => (
+              {story.chapters.map((chapter: any, index: number) => (
                 <Link key={chapter.id} href={`/story/${storyId}/chapter/${chapter.id}`} className="block">
                   <div className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
                     <div className="flex-1 min-w-0">

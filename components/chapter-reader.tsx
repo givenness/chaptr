@@ -1490,7 +1490,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
             />
           ) : (
             // For mock stories, use the original formatting
-            chapter.content.split("\n\n").map((paragraph, index) => {
+            chapter.content.split("\n\n").map((paragraph: string, index: number) => {
               if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
                 return (
                   <h3 key={index} className="font-sans font-semibold text-xl mt-8 mb-4">
@@ -1572,7 +1572,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
                 )}
                 {isStoredStory && story && story.chapters.length > 1 && (
                   (() => {
-                    const currentIndex = story.chapters.findIndex(ch => ch.id === chapterId)
+                    const currentIndex = story.chapters.findIndex((ch: any) => ch.id === chapterId)
                     const previousChapter = currentIndex > 0 ? story.chapters[currentIndex - 1] : null
                     return previousChapter ? (
                       <Link
@@ -1603,7 +1603,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
                 )}
                 {isStoredStory && story && story.chapters.length > 1 && (
                   (() => {
-                    const currentIndex = story.chapters.findIndex(ch => ch.id === chapterId)
+                    const currentIndex = story.chapters.findIndex((ch: any) => ch.id === chapterId)
                     const nextChapter = currentIndex < story.chapters.length - 1 ? story.chapters[currentIndex + 1] : null
                     return nextChapter ? (
                       <Link

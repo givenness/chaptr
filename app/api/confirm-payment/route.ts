@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { MiniAppPaymentSuccessPayload } from '@worldcoin/minikit-js'
+import { getPaymentById, removePayment } from '@/lib/payment-storage'
 
 interface IRequestPayload {
   payload: MiniAppPaymentSuccessPayload
@@ -10,9 +11,6 @@ export async function POST(req: NextRequest) {
     const { payload } = (await req.json()) as IRequestPayload
 
     console.log('Payment confirmation received:', payload)
-
-    // Import the helper function from initiate-payment
-    const { getPaymentById, removePayment } = await import('../initiate-payment/route')
 
     // Get the stored payment details using the reference ID
     const storedPayment = getPaymentById(payload.reference)

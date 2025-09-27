@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { storePayment } from '@/lib/payment-storage'
 
 interface PaymentRequest {
   storyId: string
@@ -7,9 +8,6 @@ interface PaymentRequest {
   token: string
   message?: string
 }
-
-// In-memory storage for demo - in production, use a database
-const pendingPayments = new Map<string, PaymentRequest & { id: string, timestamp: number }>()
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,14 +32,12 @@ export async function POST(req: NextRequest) {
     const paymentId = crypto.randomUUID().replace(/-/g, '')
 
     // Store payment details for later verification
-    pendingPayments.set(paymentId, {
-      id: paymentId,
+    storePayment(paymentId, {
       storyId,
       authorId,
       amount,
       token,
-      message,
-      timestamp: Date.now()
+      message
     })
 
     console.log('Payment initiated:', {
@@ -65,12 +61,3 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Helper function to get payment details (for confirm-payment endpoint)
-export function getPaymentById(id: string) {
-  return pendingPayments.get(id)
-}
-
-// Helper function to remove payment after confirmation
-export function removePayment(id: string) {
-  return pendingPayments.delete(id)
-}

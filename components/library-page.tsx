@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Heart, Clock, User, MessageCircle } from "lucide-react"
 import Link from "next/link"
-import { mockStories } from "./home-feed"
+import { mockStories } from "@/data/mock-stories"
 
 const mockLibraryData = {
   following: [
@@ -130,7 +130,7 @@ export function LibraryPage() {
                       <p className="text-xs text-muted-foreground mb-1">by {story.author}</p>
 
                       <div className="flex flex-wrap gap-0.5 mb-1.5">
-                        {story.tags.map((tag) => (
+                        {story.tags?.map((tag) => (
                           <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
                             {tag}
                           </Badge>
