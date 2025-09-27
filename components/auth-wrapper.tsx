@@ -11,6 +11,7 @@ import {
 interface AuthUser {
   address: string
   username: string
+  profilePictureUrl?: string
 }
 
 interface AuthContextType {
@@ -88,11 +89,30 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
       if (result.status === 'success' && result.isValid) {
         setIsAuthenticated(true)
         setAuthenticationRequired(false)
+
+        // Get World App user data
+        let worldAppUser = null
+        try {
+          // Try to get user from MiniKit directly first
+          if (MiniKit.user && MiniKit.user.username) {
+            worldAppUser = {
+              username: MiniKit.user.username,
+              profilePictureUrl: MiniKit.user.profilePictureUrl
+            }
+          } else {
+            // Fallback: get user by address
+            worldAppUser = await MiniKit.getUserByAddress(finalPayload.address)
+          }
+        } catch (error) {
+          console.log('Could not get World App user data:', error)
+        }
+
         setUser({
           address: finalPayload.address,
-          username: finalPayload.address.slice(0, 6) + '...' + finalPayload.address.slice(-4),
+          username: worldAppUser?.username || finalPayload.address.slice(0, 6) + '...' + finalPayload.address.slice(-4),
+          profilePictureUrl: worldAppUser?.profilePictureUrl,
         })
-        console.log('Authentication successful!')
+        console.log('Authentication successful!', { worldAppUser })
       } else {
         console.log('Authentication failed:', result)
         setAuthenticationRequired(true)
