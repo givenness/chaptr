@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useAuth } from "@/components/auth-provider"
 import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, Plus, X, Eye, Upload } from "lucide-react"
@@ -55,6 +56,7 @@ export function WriteInterface() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<"story" | "chapter">("story")
   const [isPublishing, setIsPublishing] = useState(false)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
   // Story state
   const [story, setStory] = useState<Story>({
@@ -104,6 +106,20 @@ export function WriteInterface() {
       content,
       wordCount,
     }))
+  }
+
+  const renderMarkdown = (content: string) => {
+    return content
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>')
+      .replace(/\n/g, '<br />')
+  }
+
+  const getReadingTime = (wordCount: number) => {
+    const wordsPerMinute = 200
+    const readingTime = Math.ceil(wordCount / wordsPerMinute)
+    return `${readingTime} min read`
   }
 
   const handlePublish = async () => {
@@ -328,10 +344,37 @@ Remember: This is your first chapter, make it compelling!"
               </div>
 
               {/* Preview Button */}
-              <Button variant="outline" className="w-full bg-transparent mb-6">
-                <Eye className="h-4 w-4 mr-2" />
-                Preview Chapter
-              </Button>
+              <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full bg-transparent mb-6"
+                    disabled={!chapter.content.trim()}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Preview Chapter
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="font-serif text-xl">
+                      {chapter.title || "Chapter Preview"}
+                    </DialogTitle>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span>{chapter.wordCount} words</span>
+                      <span>{getReadingTime(chapter.wordCount)}</span>
+                    </div>
+                  </DialogHeader>
+                  <div className="mt-6">
+                    <div
+                      className="prose prose-lg font-serif leading-relaxed max-w-none"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMarkdown(chapter.content)
+                      }}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
 
               {/* Bottom padding for mobile navigation */}
               <div className="h-6"></div>

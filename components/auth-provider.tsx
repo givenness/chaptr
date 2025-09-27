@@ -87,9 +87,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const savedUser = localStorage.getItem("chaptr_user")
       if (savedUser) {
         setUser(JSON.parse(savedUser))
+      } else {
+        // Automatically create a demo user if no session exists
+        const autoUser: User = {
+          id: "auto_user_123",
+          username: "demo_user",
+          walletAddress: "0x1234567890123456789012345678901234567890",
+          isVerified: false,
+        }
+        setUser(autoUser)
+        localStorage.setItem("chaptr_user", JSON.stringify(autoUser))
+        console.log("[v0] Auto-signed in demo user")
       }
     } catch (error) {
       console.error("Error checking session:", error)
+      // Even if there's an error, create a demo user
+      const fallbackUser: User = {
+        id: "fallback_user_123",
+        username: "demo_user",
+        walletAddress: "0x1234567890123456789012345678901234567890",
+        isVerified: false,
+      }
+      setUser(fallbackUser)
     } finally {
       setIsLoading(false)
     }
