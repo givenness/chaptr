@@ -231,42 +231,40 @@ export function HomeFeed() {
             sortedStories.map((story) => (
               <Link key={story.id} href={`/story/${story.id}`} className="block">
                 <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-                  <CardContent className="mini-app-padding">
-                    <div className="flex gap-4">
+                  <CardContent className="p-2">
+                    <div className="flex gap-2">
                       <img
                         src={story.coverImage || "/placeholder.svg"}
                         alt={story.title}
-                        className="w-20 h-28 object-cover rounded-lg flex-shrink-0"
+                        className="w-16 h-20 object-cover rounded-md flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-1">
-                          <h3 className="font-serif font-semibold text-lg leading-tight text-balance">{story.title}</h3>
+                        <h3 className="font-serif font-semibold text-base leading-tight text-balance mb-0.5">{story.title}</h3>
+
+                        <div className="flex items-center gap-1 mb-1">
+                          <User className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-xs text-primary">{story.author}</span>
+                          <Clock className="h-3 w-3 text-muted-foreground ml-1" />
+                          <span className="text-xs text-muted-foreground">{story.timeAgo}</span>
                         </div>
 
-                        <div className="flex items-center gap-2 mb-2">
-                          <User className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm text-primary">{story.author}</span>
-                          <Clock className="h-4 w-4 text-muted-foreground ml-2" />
-                          <span className="text-sm text-muted-foreground">{story.timeAgo}</span>
-                        </div>
+                        <p className="text-xs text-muted-foreground mb-1.5 line-clamp-2 text-pretty">{story.excerpt}</p>
 
-                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2 text-pretty">{story.excerpt}</p>
-
-                        <div className="flex flex-wrap gap-1 mb-3">
+                        <div className="flex flex-wrap gap-0.5 mb-1.5">
                           {story.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
+                            <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
                               {tag}
                             </Badge>
                           ))}
                         </div>
 
-                        <div className="flex items-center gap-4">
-                          <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Heart className="h-4 w-4" />
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Heart className="h-3 w-3" />
                             {story.upvotes}
                           </span>
-                          <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <MessageCircle className="h-4 w-4" />
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <MessageCircle className="h-3 w-3" />
                             {story.comments}
                           </span>
                         </div>

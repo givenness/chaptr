@@ -138,8 +138,8 @@ export function LibraryPage() {
           <div className="mini-app-element-gap">
             {mockLibraryData.readingList.map((story) => (
               <Card key={story.id}>
-                <CardContent className="mini-app-padding">
-                  <div className="flex gap-4">
+                <CardContent className="p-2">
+                  <div className="flex gap-2">
                     <img
                       src={
                         story.coverImage ||
@@ -148,22 +148,22 @@ export function LibraryPage() {
                         "/placeholder.svg"
                       }
                       alt={story.title}
-                      className="w-16 h-22 object-cover rounded-lg flex-shrink-0"
+                      className="w-14 h-18 object-cover rounded-md flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-serif font-semibold text-balance mb-1">{story.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-2">by {story.author}</p>
+                      <h3 className="font-serif font-semibold text-base leading-tight text-balance mb-0.5">{story.title}</h3>
+                      <p className="text-xs text-muted-foreground mb-1">by {story.author}</p>
 
-                      <div className="flex flex-wrap gap-1 mb-3">
+                      <div className="flex flex-wrap gap-0.5 mb-1.5">
                         {story.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
+                          <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
                             {tag}
                           </Badge>
                         ))}
                       </div>
 
-                      <div className="mb-3">
-                        <div className="flex items-center justify-between text-sm mb-1">
+                      <div className="mb-1.5">
+                        <div className="flex items-center justify-between text-xs mb-0.5">
                           <span className="text-muted-foreground">Progress</span>
                           <span className="font-medium">{story.progress}%</span>
                         </div>
@@ -178,7 +178,7 @@ export function LibraryPage() {
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-muted-foreground">Last read {story.lastRead}</span>
                         <Link href={`/story/${story.id}`}>
-                          <Button size="sm" variant="outline">
+                          <Button size="sm" variant="outline" className="text-xs px-2 py-1">
                             Continue Reading
                           </Button>
                         </Link>
@@ -196,24 +196,24 @@ export function LibraryPage() {
           <div className="mini-app-element-gap">
             {mockLibraryData.following.map((author) => (
               <Card key={author.id}>
-                <CardContent className="mini-app-padding">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <User className="h-6 w-6 text-primary" />
+                <CardContent className="p-2">
+                  <div className="flex items-center gap-2">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <User className="h-5 w-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-balance mb-1">{author.username}</h3>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                      <h3 className="font-semibold text-base text-balance mb-0.5">{author.username}</h3>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mb-1">
                         <span>{author.storiesCount} stories</span>
                         <span>{author.followersCount} followers</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">Latest: {author.latestStory}</p>
+                      <p className="text-xs text-muted-foreground">Latest: {author.latestStory}</p>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <Button size="sm" variant="outline">
+                    <div className="flex flex-col gap-1">
+                      <Button size="sm" variant="outline" className="text-xs px-2 py-1">
                         View Profile
                       </Button>
-                      <Button size="sm" variant="ghost" className="text-xs">
+                      <Button size="sm" variant="ghost" className="text-xs px-2 py-1">
                         Unfollow
                       </Button>
                     </div>
@@ -229,32 +229,32 @@ export function LibraryPage() {
           <div className="mini-app-element-gap">
             {mockLibraryData.recentActivity.map((activity) => (
               <Card key={activity.id}>
-                <CardContent className="mini-app-padding">
-                  <div className="flex items-start gap-3">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                      {activity.type === "upvote" && <Heart className="h-4 w-4 text-primary" />}
-                      {activity.type === "comment" && <BookOpen className="h-4 w-4 text-primary" />}
-                      {activity.type === "follow" && <User className="h-4 w-4 text-primary" />}
+                <CardContent className="p-2">
+                  <div className="flex items-start gap-2">
+                    <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      {activity.type === "upvote" && <Heart className="h-3 w-3 text-primary" />}
+                      {activity.type === "comment" && <BookOpen className="h-3 w-3 text-primary" />}
+                      {activity.type === "follow" && <User className="h-3 w-3 text-primary" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       {activity.type === "upvote" && (
-                        <p className="text-sm">
+                        <p className="text-xs">
                           You upvoted <span className="font-medium">{activity.chapter}</span> in{" "}
                           <span className="font-medium">{activity.story}</span>
                         </p>
                       )}
                       {activity.type === "comment" && (
-                        <p className="text-sm">
+                        <p className="text-xs">
                           You commented on <span className="font-medium">{activity.chapter}</span> in{" "}
                           <span className="font-medium">{activity.story}</span>
                         </p>
                       )}
                       {activity.type === "follow" && (
-                        <p className="text-sm">
+                        <p className="text-xs">
                           You started following <span className="font-medium">{activity.author}</span>
                         </p>
                       )}
-                      <div className="flex items-center gap-1 mt-1">
+                      <div className="flex items-center gap-1 mt-0.5">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">{activity.timeAgo}</span>
                       </div>
