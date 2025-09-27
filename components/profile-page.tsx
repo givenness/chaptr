@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/components/auth-provider"
 import { AuthPrompt } from "@/components/auth-prompt"
-import { User, BookOpen, Heart, MessageCircle, DollarSign, Shield } from "lucide-react"
+import { User, BookOpen, Heart, MessageCircle, DollarSign, Shield, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { getUserStories, type StoredStory } from "@/lib/story-storage"
+import { getUserStories, deleteStory, type StoredStory } from "@/lib/story-storage"
 
 const mockStories = [
   {
@@ -58,6 +58,21 @@ export function ProfilePage() {
       setUserStories(stories)
     }
   }, [user])
+
+  const handleDeleteStory = (storyId: string, storyTitle: string) => {
+    if (window.confirm(`Are you sure you want to delete "${storyTitle}"? This action cannot be undone.`)) {
+      const success = deleteStory(storyId)
+      if (success) {
+        // Refresh the stories list
+        if (user) {
+          const updatedStories = getUserStories(user.id)
+          setUserStories(updatedStories)
+        }
+      } else {
+        alert('Failed to delete story. Please try again.')
+      }
+    }
+  }
 
   if (!user) {
     return <AuthPrompt />
@@ -175,40 +190,54 @@ export function ProfilePage() {
             ) : (
               <div className="mini-app-element-gap">
                 {userStories.map((story) => (
-                  <Link key={story.id} href={`/story/${story.id}`} className="block">
-                    <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-                      <CardContent className="mini-app-padding">
-                        <div className="flex gap-4">
+                  <Card key={story.id} className="overflow-hidden hover:shadow-md transition-shadow">
+                    <CardContent className="mini-app-padding">
+                      <div className="flex gap-4">
+                        <Link href={`/story/${story.id}`} className="contents">
                           <div className="flex-shrink-0">
                             {story.coverImage ? (
                               <img
                                 src={story.coverImage}
                                 alt={story.title}
-                                className="w-16 h-20 object-cover rounded-lg border border-border/50"
+                                className="w-16 h-20 object-cover rounded-lg border border-border/50 cursor-pointer"
                               />
                             ) : (
-                              <div className="w-16 h-20 bg-muted rounded-lg border border-border/50 flex items-center justify-center">
+                              <div className="w-16 h-20 bg-muted rounded-lg border border-border/50 flex items-center justify-center cursor-pointer">
                                 <BookOpen className="h-6 w-6 text-muted-foreground" />
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 min-w-0 space-y-3">
-                            <div className="flex items-start justify-between gap-3">
-                              <h4 className="font-serif font-semibold text-lg leading-tight text-balance">
+                        </Link>
+                        <div className="flex-1 min-w-0 space-y-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <Link href={`/story/${story.id}`} className="flex-1">
+                              <h4 className="font-serif font-semibold text-lg leading-tight text-balance cursor-pointer hover:text-primary">
                                 {story.title}
                               </h4>
-                            </div>
-                            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 text-pretty">
+                            </Link>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault()
+                                handleDeleteStory(story.id, story.title)
+                              }}
+                              className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                              title="Delete story"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <Link href={`/story/${story.id}`} className="block">
+                            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 text-pretty cursor-pointer">
                               {story.description}
                             </p>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 mt-3">
                               {story.tags.map((tag) => (
                                 <Badge key={tag} variant="outline" className="text-xs px-2 py-0.5">
                                   {tag}
                                 </Badge>
                               ))}
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1 mt-3">
                               <span className="font-medium">{story.chapters.length} chapters</span>
                               <div className="flex items-center gap-1">
                                 <Heart className="h-3.5 w-3.5" />
@@ -220,11 +249,11 @@ export function ProfilePage() {
                               </div>
                               <span className="text-xs">{story.stats.totalWords} words</span>
                             </div>
-                          </div>
+                          </Link>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             )}
