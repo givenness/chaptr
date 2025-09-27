@@ -190,7 +190,7 @@ export function HomeFeed() {
             placeholder="Search by genre (e.g., fantasy, sci-fi, romance)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 border-2 border-border bg-card shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </div>
 
