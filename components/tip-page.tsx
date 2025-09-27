@@ -161,7 +161,7 @@ export function TipPage({ storyId }: TipPageProps) {
             <ArrowLeft className="h-5 w-5" />
             <span>Back to Story</span>
           </Link>
-          <h1 className="font-serif font-semibold text-lg">Tip Author</h1>
+          <h1 className="font-sans font-semibold text-lg">Tip Author</h1>
           <div className="w-16" /> {/* Spacer for centering */}
         </div>
       </div>
@@ -179,7 +179,7 @@ export function TipPage({ storyId }: TipPageProps) {
                 className="w-16 h-22 object-cover rounded-lg flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <h2 className="font-serif font-semibold text-lg text-balance mb-1">{mockStory.title}</h2>
+                <h2 className="font-sans font-semibold text-lg text-balance mb-1">{mockStory.title}</h2>
                 <p className="text-muted-foreground mb-2">by {mockStory.author}</p>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <DollarSign className="h-4 w-4" />
@@ -193,7 +193,7 @@ export function TipPage({ storyId }: TipPageProps) {
         {/* Token Selection */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-serif">Choose Token</CardTitle>
+            <CardTitle className="font-sans">Choose Token</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-3">
@@ -237,7 +237,7 @@ export function TipPage({ storyId }: TipPageProps) {
         {/* Amount Selection */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-serif">Tip Amount</CardTitle>
+            <CardTitle className="font-sans">Tip Amount</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Preset Amounts */}
@@ -297,7 +297,7 @@ export function TipPage({ storyId }: TipPageProps) {
         {/* Optional Message */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-serif">Message (Optional)</CardTitle>
+            <CardTitle className="font-sans">Message (Optional)</CardTitle>
           </CardHeader>
           <CardContent>
             <textarea

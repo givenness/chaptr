@@ -231,7 +231,7 @@ export function HomeFeed() {
                         className="w-16 h-20 object-cover rounded-md flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-serif font-semibold text-base leading-tight text-balance mb-0.5">{story.title}</h3>
+                        <h3 className="font-sans font-semibold text-base leading-tight text-balance mb-0.5">{story.title}</h3>
 
                         <div className="flex items-center gap-1 mb-1">
                           <User className="h-3 w-3 text-muted-foreground" />

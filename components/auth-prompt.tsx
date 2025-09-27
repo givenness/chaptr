@@ -16,7 +16,7 @@ export function AuthPrompt() {
           <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
             <BookOpen className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-serif">Welcome to Chaptr</CardTitle>
+          <CardTitle className="text-2xl font-sans">Welcome to Chaptr</CardTitle>
           <CardDescription className="text-pretty">
             Stories by verified humans, for curious minds.{" "}
             {isWorldApp ? "Sign in to get started." : "Experience the full app in World App."}

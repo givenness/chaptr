@@ -1386,7 +1386,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-serif font-bold mb-2">Chapter Not Found</h1>
+          <h1 className="text-2xl font-sans font-bold mb-2">Chapter Not Found</h1>
           <p className="text-muted-foreground mb-4">The chapter you're looking for doesn't exist.</p>
           <Link href={`/story/${storyId}`}>
             <Button>Back to Story</Button>
@@ -1478,7 +1478,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Chapter Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-serif font-bold text-balance mb-2">{chapter.title}</h1>
+          <h1 className="text-2xl font-sans font-bold text-balance mb-2">{chapter.title}</h1>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span>by {isStoredStory ? story?.authorName : chapter.story?.author}</span>
             <span>{chapter.wordCount} words</span>
@@ -1488,7 +1488,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
         </div>
 
         {/* Chapter Text */}
-        <div className="prose prose-lg max-w-none font-serif leading-relaxed" style={{ fontSize: `${fontSize}px` }}>
+        <div className="prose prose-lg max-w-none font-sans leading-relaxed" style={{ fontSize: `${fontSize}px` }}>
           {isStoredStory ? (
             // For localStorage stories, render as HTML from markdown
             <div
@@ -1505,7 +1505,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
             chapter.content.split("\n\n").map((paragraph, index) => {
               if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
                 return (
-                  <h3 key={index} className="font-serif font-semibold text-xl mt-8 mb-4">
+                  <h3 key={index} className="font-sans font-semibold text-xl mt-8 mb-4">
                     {paragraph.slice(2, -2)}
                   </h3>
                 )

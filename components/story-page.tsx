@@ -573,7 +573,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-serif font-bold mb-2">Story Not Found</h1>
+          <h1 className="text-2xl font-sans font-bold mb-2">Story Not Found</h1>
           <p className="text-muted-foreground mb-4">The story you're looking for doesn't exist.</p>
           <Link href="/">
             <Button>Back to Home</Button>
@@ -628,7 +628,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-serif font-bold text-balance mb-2">{story.title}</h1>
+            <h1 className="text-2xl font-sans font-bold text-balance mb-2">{story.title}</h1>
 
             <div className="flex items-center gap-2 mb-3">
               <User className="h-4 w-4 text-muted-foreground" />
@@ -669,7 +669,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
         {/* Description */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <h3 className="font-serif font-semibold mb-3">About This Story</h3>
+            <h3 className="font-sans font-semibold mb-3">About This Story</h3>
             <p className="text-muted-foreground leading-relaxed text-pretty">{story.description}</p>
             <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
               <span>Language: {isStoredStory ? (story.language === 'en' ? 'English' : story.language) : story.language}</span>
@@ -687,7 +687,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-serif font-semibold">Chapters</h3>
+              <h3 className="font-sans font-semibold">Chapters</h3>
               <span className="text-sm text-muted-foreground">{story.chapters.length} chapters</span>
             </div>
 

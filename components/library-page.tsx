@@ -144,7 +144,7 @@ export function LibraryPage() {
                       className="w-14 h-18 object-cover rounded-md flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-serif font-semibold text-base leading-tight text-balance mb-0.5">{story.title}</h3>
+                      <h3 className="font-sans font-semibold text-base leading-tight text-balance mb-0.5">{story.title}</h3>
                       <p className="text-xs text-muted-foreground mb-1">by {story.author}</p>
 
                       <div className="flex flex-wrap gap-0.5 mb-1.5">

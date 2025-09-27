@@ -142,7 +142,7 @@ export function CommentsPage({ storyId, chapterId }: CommentsPageProps) {
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Chapter Info */}
         <div className="mb-6">
-          <h1 className="text-xl font-serif font-semibold text-balance mb-1">{mockChapter.title}</h1>
+          <h1 className="text-xl font-sans font-semibold text-balance mb-1">{mockChapter.title}</h1>
           <p className="text-sm text-muted-foreground">
             from {mockChapter.story.title} by {mockChapter.story.author}
           </p>

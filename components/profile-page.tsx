@@ -101,7 +101,7 @@ export function ProfilePage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <h2 className="text-xl font-serif font-semibold">{user.username}</h2>
+                  <h2 className="text-xl font-sans font-semibold">{user.username}</h2>
                   {user.isVerified && (
                     <div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded-full">
                       <Shield className="h-3 w-3 text-primary" />
@@ -157,7 +157,7 @@ export function ProfilePage() {
         {activeTab === "stories" && (
           <div className="mini-app-element-gap">
             <div className="flex items-center justify-between">
-              <h3 className="font-serif font-semibold">Published Stories</h3>
+              <h3 className="font-sans font-semibold">Published Stories</h3>
               <Link href="/write">
                 <Button size="sm">
                   <BookOpen className="h-4 w-4 mr-2" />
@@ -169,7 +169,7 @@ export function ProfilePage() {
             {userStories.length === 0 ? (
               <Card className="p-8 text-center">
                 <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h4 className="font-serif font-semibold mb-2">No stories yet</h4>
+                <h4 className="font-sans font-semibold mb-2">No stories yet</h4>
                 <p className="text-sm text-muted-foreground mb-4">
                   Start writing your first story and share it with the world
                 </p>
@@ -204,7 +204,7 @@ export function ProfilePage() {
                         <div className="flex-1 min-w-0 space-y-3">
                           <div className="flex items-start justify-between gap-3">
                             <Link href={`/story/${story.id}`} className="flex-1">
-                              <h4 className="font-serif font-semibold text-lg leading-tight text-balance cursor-pointer hover:text-primary">
+                              <h4 className="font-sans font-semibold text-lg leading-tight text-balance cursor-pointer hover:text-primary">
                                 {story.title}
                               </h4>
                             </Link>
@@ -309,7 +309,7 @@ export function ProfilePage() {
             </div>
 
             <Card className="mini-app-padding">
-              <h3 className="font-serif font-semibold mb-4">Engagement Overview</h3>
+              <h3 className="font-sans font-semibold mb-4">Engagement Overview</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">{userStats.followers}</p>
@@ -335,7 +335,7 @@ export function ProfilePage() {
           <div className="mini-app-element-gap">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-serif">Account Settings</CardTitle>
+                <CardTitle className="text-lg font-sans">Account Settings</CardTitle>
               </CardHeader>
               <CardContent className="mini-app-element-gap">
                 <div className="flex items-center justify-between">
@@ -372,7 +372,7 @@ export function ProfilePage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-serif">Danger Zone</CardTitle>
+                <CardTitle className="text-lg font-sans">Danger Zone</CardTitle>
               </CardHeader>
               <CardContent className="mini-app-element-gap">
                 <Button onClick={logout} variant="outline" className="w-full bg-transparent">

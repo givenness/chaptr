@@ -160,7 +160,7 @@ export function DiscoverPage() {
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
         <div className="p-4">
-          <h1 className="text-2xl font-serif font-bold mb-4">Discover Stories</h1>
+          <h1 className="text-2xl font-sans font-bold mb-4">Discover Stories</h1>
 
           {/* Search Bar */}
           <div className="flex gap-2 mb-4">
@@ -262,7 +262,7 @@ export function DiscoverPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="h-5 w-5 text-primary" />
-              <h2 className="font-serif font-semibold text-lg">Trending Now</h2>
+              <h2 className="font-sans font-semibold text-lg">Trending Now</h2>
             </div>
             {mockDiscoverData.trending.map((story, index) => (
               <Card key={story.id}>
@@ -284,7 +284,7 @@ export function DiscoverPage() {
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-serif font-semibold text-lg leading-tight text-balance mb-1">
+                      <h3 className="font-sans font-semibold text-lg leading-tight text-balance mb-1">
                         {story.title}
                       </h3>
 
@@ -340,7 +340,7 @@ export function DiscoverPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <Clock className="h-5 w-5 text-primary" />
-              <h2 className="font-serif font-semibold text-lg">Editor's Picks</h2>
+              <h2 className="font-sans font-semibold text-lg">Editor's Picks</h2>
             </div>
             {mockDiscoverData.featured.map((story) => (
               <Card key={story.id}>
@@ -357,7 +357,7 @@ export function DiscoverPage() {
                       className="w-20 h-28 object-cover rounded-lg flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-serif font-semibold text-lg leading-tight text-balance mb-1">
+                      <h3 className="font-sans font-semibold text-lg leading-tight text-balance mb-1">
                         {story.title}
                       </h3>
 
@@ -413,7 +413,7 @@ export function DiscoverPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <Search className="h-5 w-5 text-primary" />
-              <h2 className="font-serif font-semibold text-lg">Search Results for "{searchQuery}"</h2>
+              <h2 className="font-sans font-semibold text-lg">Search Results for "{searchQuery}"</h2>
               <span className="text-sm text-muted-foreground">({filteredStories.length} found)</span>
             </div>
 
@@ -450,7 +450,7 @@ export function DiscoverPage() {
                         className="w-20 h-28 object-cover rounded-lg flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-serif font-semibold text-lg leading-tight text-balance mb-1">
+                        <h3 className="font-sans font-semibold text-lg leading-tight text-balance mb-1">
                           {story.title}
                         </h3>
 

@@ -252,7 +252,7 @@ export function WriteInterface() {
         {activeTab === "story" ? (
           <Card>
             <CardHeader>
-              <CardTitle className="font-serif">Story Information</CardTitle>
+              <CardTitle className="font-sans">Story Information</CardTitle>
             </CardHeader>
             <CardContent className="mini-app-padding mini-app-section-gap">
               {/* Title */}
@@ -263,7 +263,7 @@ export function WriteInterface() {
                   placeholder="Enter your story title"
                   value={story.title}
                   onChange={(e) => setStory((prev) => ({ ...prev, title: e.target.value }))}
-                  className="text-lg font-serif"
+                  className="text-lg font-sans"
                 />
               </div>
 
@@ -399,7 +399,7 @@ export function WriteInterface() {
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle className="font-serif">First Chapter</CardTitle>
+              <CardTitle className="font-sans">First Chapter</CardTitle>
             </CardHeader>
             <CardContent className="mini-app-padding mini-app-section-gap">
               {/* Chapter Title */}
@@ -410,7 +410,7 @@ export function WriteInterface() {
                   placeholder="Chapter 1: The Beginning"
                   value={chapter.title}
                   onChange={(e) => setChapter((prev) => ({ ...prev, title: e.target.value }))}
-                  className="font-serif"
+                  className="font-sans"
                 />
               </div>
 
@@ -434,7 +434,7 @@ Remember: This is your first chapter, make it compelling!"
                   value={chapter.content}
                   onChange={(e) => updateChapterContent(e.target.value)}
                   rows={20}
-                  className="resize-none font-serif leading-relaxed"
+                  className="resize-none font-sans leading-relaxed"
                 />
                 <p className="text-xs text-muted-foreground">
                   Tip: Write at least 100 words for your first chapter. You can use basic markdown formatting.
@@ -455,7 +455,7 @@ Remember: This is your first chapter, make it compelling!"
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle className="font-serif text-xl">
+                    <DialogTitle className="font-sans text-xl">
                       {chapter.title || "Chapter Preview"}
                     </DialogTitle>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -465,7 +465,7 @@ Remember: This is your first chapter, make it compelling!"
                   </DialogHeader>
                   <div className="mt-6">
                     <div
-                      className="prose prose-lg font-serif leading-relaxed max-w-none"
+                      className="prose prose-lg font-sans leading-relaxed max-w-none"
                       dangerouslySetInnerHTML={{
                         __html: renderMarkdown(chapter.content)
                       }}
