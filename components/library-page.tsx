@@ -137,8 +137,9 @@ export function LibraryPage() {
         {activeTab === "reading" && (
           <div className="mini-app-element-gap">
             {mockLibraryData.readingList.map((story) => (
-              <Card key={story.id}>
-                <CardContent className="p-2">
+              <Link key={story.id} href={`/story/${story.id}`} className="block">
+                <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer gradient-card hover-lift">
+                  <CardContent className="p-2">
                   <div className="flex gap-2">
                     <img
                       src={
@@ -162,31 +163,27 @@ export function LibraryPage() {
                         ))}
                       </div>
 
-                      <div className="mb-1.5">
+                      <div className="mb-1">
                         <div className="flex items-center justify-between text-xs mb-0.5">
                           <span className="text-muted-foreground">Progress</span>
                           <span className="font-medium">{story.progress}%</span>
                         </div>
-                        <div className="w-full bg-muted rounded-full h-2">
+                        <div className="w-full bg-muted rounded-full h-1.5">
                           <div
-                            className="bg-primary h-2 rounded-full transition-all duration-300"
+                            className="bg-primary h-1.5 rounded-full transition-all duration-300"
                             style={{ width: `${story.progress}%` }}
                           />
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center">
                         <span className="text-xs text-muted-foreground">Last read {story.lastRead}</span>
-                        <Link href={`/story/${story.id}`}>
-                          <Button size="sm" variant="outline" className="text-xs px-2 py-1">
-                            Continue Reading
-                          </Button>
-                        </Link>
                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         )}

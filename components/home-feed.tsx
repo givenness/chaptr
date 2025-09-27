@@ -230,7 +230,7 @@ export function HomeFeed() {
           ) : (
             sortedStories.map((story) => (
               <Link key={story.id} href={`/story/${story.id}`} className="block">
-                <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
+                <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer gradient-card hover-lift">
                   <CardContent className="p-2">
                     <div className="flex gap-2">
                       <img
