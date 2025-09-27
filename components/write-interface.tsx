@@ -78,7 +78,6 @@ export function WriteInterface() {
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null)
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null)
 
-
   const addTag = () => {
     if (newTag.trim() && !story.tags.includes(newTag.trim()) && story.tags.length < 5) {
       setStory((prev) => ({
