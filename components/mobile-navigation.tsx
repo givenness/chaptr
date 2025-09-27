@@ -19,8 +19,8 @@ export function MobileNavigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border">
-      <div className="flex items-center justify-between px-2 py-3 mini-app-nav-spacing safe-area-bottom">
+    <nav className="fixed bottom-4 left-4 right-4 bg-card border border-border rounded-2xl shadow-lg backdrop-blur-md">
+      <div className="flex items-center justify-between px-2 py-1">
         <div className="flex items-center flex-1">
           {leftNavItems.map(({ icon: Icon, label, href }) => {
             const isActive = pathname === href
@@ -29,14 +29,14 @@ export function MobileNavigation() {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex flex-col items-center justify-center p-2 rounded-lg transition-colors min-w-0 flex-1",
+                  "flex flex-col items-center justify-center px-1 py-0.5 rounded-lg transition-colors min-w-0 flex-1",
                   isActive
                     ? "text-primary bg-primary/10"
                     : "text-muted-foreground hover:text-foreground hover:bg-primary/5",
                 )}
               >
-                <Icon className="h-5 w-5 mb-1" />
-                <span className="text-xs font-medium truncate">{label}</span>
+                <Icon className="h-5 w-5" />
+                <span className="text-xs font-medium truncate mt-0.5">{label}</span>
               </Link>
             )
           })}
@@ -54,14 +54,14 @@ export function MobileNavigation() {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex flex-col items-center justify-center p-2 rounded-lg transition-colors min-w-0 flex-1",
+                  "flex flex-col items-center justify-center px-1 py-0.5 rounded-lg transition-colors min-w-0 flex-1",
                   isActive
                     ? "text-primary bg-primary/10"
                     : "text-muted-foreground hover:text-foreground hover:bg-primary/5",
                 )}
               >
-                <Icon className="h-5 w-5 mb-1" />
-                <span className="text-xs font-medium truncate">{label}</span>
+                <Icon className="h-5 w-5" />
+                <span className="text-xs font-medium truncate mt-0.5">{label}</span>
               </Link>
             )
           })}

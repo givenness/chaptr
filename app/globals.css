@@ -223,6 +223,6 @@
 
   /* Bottom navigation spacing */
   .mini-app-nav-spacing {
-    @apply pb-3; /* 12px from bottom safe area */
+    @apply pb-20; /* 80px to account for floating nav */
   }
 }
