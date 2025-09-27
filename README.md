@@ -2,7 +2,7 @@
 
 ![chaptr](https://github.com/user-attachments/assets/710b64d6-6b9a-4e1b-9688-6e86241cdff2)
 
-A mobile‑first World Mini App for user‑generated serialized fiction
+A World Mini App for user‑generated serialized fiction: verified authors publish stories in chapters; readers follow, upvote, comment, and tip authors. 
 
 ## ✨ Features
 
