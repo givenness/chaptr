@@ -1,6 +1,6 @@
 # chaptr
 
-<img width="183" height="60" alt="chaptr-logo" src="https://github.com/user-attachments/assets/f890addf-aa40-42e0-88e8-38daa74ba00c" />
+![chaptr](https://github.com/user-attachments/assets/710b64d6-6b9a-4e1b-9688-6e86241cdff2)
 
 A mobile‑first World Mini App for user‑generated serialized fiction
 
