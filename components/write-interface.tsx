@@ -226,18 +226,19 @@ export function WriteInterface() {
           <h1 className="text-2xl font-serif font-bold">Write</h1>
           <p className="text-sm text-muted-foreground mt-2">Create and publish your stories</p>
         </div>
-        <div className="flex items-center justify-between mini-app-padding pb-6">
+      </div>
+
+      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '48px' }}>
+        {/* Action buttons */}
+        <div className="flex items-center justify-between mini-app-header-gap">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-5 w-5" />
             <span>Back</span>
           </Link>
-          <Button onClick={handlePublish} disabled={!canPublish || isPublishing} size="sm" className="mb-6">
+          <Button onClick={handlePublish} disabled={!canPublish || isPublishing} size="sm">
             {isPublishing ? "Publishing..." : "Publish"}
           </Button>
         </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto mini-app-padding mini-app-header-gap">
         {/* Tabs */}
         <div className="flex gap-2 mini-app-header-gap">
           <Button
