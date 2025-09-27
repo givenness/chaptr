@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,7 +9,7 @@ import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, Heart, MessageCircle, DollarSign, User, BookOpen, Share } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { formatCurrencyShort } from "@/lib/currency"
+import { getStoryById, updateStoryStats, type StoredStory } from "@/lib/story-storage"
 
 interface StoryPageProps {
   storyId: string
@@ -542,8 +542,28 @@ const mockStories = {
 export function StoryPage({ storyId }: StoryPageProps) {
   const { user } = useAuth()
   const router = useRouter()
-  const story = mockStories[storyId as keyof typeof mockStories]
-  const [isFollowing, setIsFollowing] = useState(story?.isFollowing || false)
+  const [story, setStory] = useState<StoredStory | any>(null)
+  const [isStoredStory, setIsStoredStory] = useState(false)
+  const [isFollowing, setIsFollowing] = useState(false)
+
+  useEffect(() => {
+    // First try to get from localStorage (user published stories)
+    const storedStory = getStoryById(storyId)
+    if (storedStory) {
+      setStory(storedStory)
+      setIsStoredStory(true)
+      // Increment view count when story is loaded
+      updateStoryStats(storyId, { views: storedStory.stats.views + 1 })
+    } else {
+      // Fall back to mock stories
+      const mockStory = mockStories[storyId as keyof typeof mockStories]
+      if (mockStory) {
+        setStory(mockStory)
+        setIsStoredStory(false)
+        setIsFollowing(mockStory.isFollowing || false)
+      }
+    }
+  }, [storyId])
 
   if (!user) {
     return <AuthPrompt />
@@ -596,18 +616,24 @@ export function StoryPage({ storyId }: StoryPageProps) {
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Story Header */}
         <div className="flex gap-4 mb-6">
-          <img
-            src={story.coverImage || "/placeholder.svg?height=176&width=128&query=minimal elegant book cover design"}
-            alt={story.title}
-            className="w-32 h-44 object-cover rounded-lg flex-shrink-0"
-          />
+          {story.coverImage ? (
+            <img
+              src={story.coverImage}
+              alt={story.title}
+              className="w-32 h-44 object-cover rounded-lg flex-shrink-0"
+            />
+          ) : (
+            <div className="w-32 h-44 bg-muted rounded-lg flex-shrink-0 flex items-center justify-center">
+              <BookOpen className="h-12 w-12 text-muted-foreground" />
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl font-serif font-bold text-balance mb-2">{story.title}</h1>
 
             <div className="flex items-center gap-2 mb-3">
               <User className="h-4 w-4 text-muted-foreground" />
               <Link href={`/author/${story.authorId}`} className="text-sm font-medium text-primary hover:underline">
-                {story.author}
+                {isStoredStory ? story.authorName : story.author}
               </Link>
             </div>
 
@@ -622,15 +648,15 @@ export function StoryPage({ storyId }: StoryPageProps) {
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
               <div className="flex items-center gap-1">
                 <Heart className="h-4 w-4" />
-                {story.upvotes}
+                {isStoredStory ? story.stats.likes : story.upvotes}
               </div>
               <div className="flex items-center gap-1">
                 <MessageCircle className="h-4 w-4" />
-                {story.comments}
+                {isStoredStory ? story.stats.views : story.comments}
               </div>
               <div className="flex items-center gap-1">
                 <DollarSign className="h-4 w-4" />
-                {formatCurrencyShort(story.tips)}
+                {isStoredStory ? `${story.stats.tips.toFixed(1)} WLD` : `${story.tips.toFixed(1)} WLD`}
               </div>
             </div>
 
@@ -646,8 +672,12 @@ export function StoryPage({ storyId }: StoryPageProps) {
             <h3 className="font-serif font-semibold mb-3">About This Story</h3>
             <p className="text-muted-foreground leading-relaxed text-pretty">{story.description}</p>
             <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
-              <span>Language: {story.language}</span>
-              <span>{story.followers} followers</span>
+              <span>Language: {isStoredStory ? (story.language === 'en' ? 'English' : story.language) : story.language}</span>
+              {isStoredStory ? (
+                <span>{story.stats.totalWords} words</span>
+              ) : (
+                <span>{story.followers} followers</span>
+              )}
               <span>Started {new Date(story.createdAt).toLocaleDateString()}</span>
             </div>
           </CardContent>
@@ -669,18 +699,23 @@ export function StoryPage({ storyId }: StoryPageProps) {
                       <h4 className="font-medium text-balance mb-1">{chapter.title}</h4>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>{chapter.wordCount} words</span>
-                        <span>{new Date(chapter.publishedAt).toLocaleDateString()}</span>
+                        <span>{new Date(isStoredStory ? chapter.createdAt : chapter.publishedAt).toLocaleDateString()}</span>
+                        {isStoredStory && <span>Chapter {chapter.chapterNumber}</span>}
                       </div>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Heart className="h-3 w-3" />
-                        {chapter.upvotes}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MessageCircle className="h-3 w-3" />
-                        {chapter.comments}
-                      </div>
+                      {!isStoredStory && (
+                        <>
+                          <div className="flex items-center gap-1">
+                            <Heart className="h-3 w-3" />
+                            {chapter.upvotes}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <MessageCircle className="h-3 w-3" />
+                            {chapter.comments}
+                          </div>
+                        </>
+                      )}
                       <BookOpen className="h-4 w-4" />
                     </div>
                   </div>

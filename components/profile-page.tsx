@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -8,7 +8,7 @@ import { useAuth } from "@/components/auth-provider"
 import { AuthPrompt } from "@/components/auth-prompt"
 import { User, BookOpen, Heart, MessageCircle, DollarSign, Shield } from "lucide-react"
 import Link from "next/link"
-import { formatCurrencyShort } from "@/lib/currency"
+import { getUserStories, type StoredStory } from "@/lib/story-storage"
 
 const mockStories = [
   {
@@ -50,21 +50,28 @@ const mockStories = [
 export function ProfilePage() {
   const { user, logout } = useAuth()
   const [activeTab, setActiveTab] = useState<"stories" | "stats" | "settings">("stories")
+  const [userStories, setUserStories] = useState<StoredStory[]>([])
+
+  useEffect(() => {
+    if (user) {
+      const stories = getUserStories(user.id)
+      setUserStories(stories)
+    }
+  }, [user])
 
   if (!user) {
     return <AuthPrompt />
   }
 
-  const userStories = mockStories.filter((story) => story.authorId === user.username)
-
-  const mockUserStats = {
+  const userStats = {
     storiesPublished: userStories.length,
-    totalUpvotes: userStories.reduce((sum, story) => sum + story.upvotes, 0),
-    totalComments: userStories.reduce((sum, story) => sum + story.comments, 0),
-    totalTips: userStories.reduce((sum, story) => sum + story.tips, 0),
-    followers: 234,
-    following: 67,
-    joinedDate: "2024-01-10",
+    totalUpvotes: userStories.reduce((sum, story) => sum + story.stats.likes, 0),
+    totalComments: userStories.reduce((sum, story) => sum + story.stats.views, 0), // Using views as proxy for engagement
+    totalTips: userStories.reduce((sum, story) => sum + story.stats.tips, 0),
+    totalWords: userStories.reduce((sum, story) => sum + story.stats.totalWords, 0),
+    followers: 234, // Keep as mock for now
+    following: 67,   // Keep as mock for now
+    joinedDate: "2024-01-10", // Keep as mock for now
   }
 
   return (
@@ -95,17 +102,17 @@ export function ProfilePage() {
                   )}
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Joined {new Date(mockUserStats.joinedDate).toLocaleDateString()}
+                  Joined {new Date(userStats.joinedDate).toLocaleDateString()}
                 </p>
                 <div className="flex items-center gap-4 text-sm">
                   <span>
-                    <strong>{mockUserStats.followers}</strong> followers
+                    <strong>{userStats.followers}</strong> followers
                   </span>
                   <span>
-                    <strong>{mockUserStats.following}</strong> following
+                    <strong>{userStats.following}</strong> following
                   </span>
                   <span>
-                    <strong>{mockUserStats.storiesPublished}</strong> stories
+                    <strong>{userStats.storiesPublished}</strong> stories
                   </span>
                 </div>
               </div>
@@ -173,21 +180,17 @@ export function ProfilePage() {
                       <CardContent className="mini-app-padding">
                         <div className="flex gap-4">
                           <div className="flex-shrink-0">
-                            <img
-                              src={
-                                story.coverImage ||
-                                "/placeholder.svg?height=88&width=64&query=minimal elegant book cover design" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg"
-                              }
-                              alt={story.title}
-                              className="w-16 h-20 object-cover rounded-lg border border-border/50"
-                            />
+                            {story.coverImage ? (
+                              <img
+                                src={story.coverImage}
+                                alt={story.title}
+                                className="w-16 h-20 object-cover rounded-lg border border-border/50"
+                              />
+                            ) : (
+                              <div className="w-16 h-20 bg-muted rounded-lg border border-border/50 flex items-center justify-center">
+                                <BookOpen className="h-6 w-6 text-muted-foreground" />
+                              </div>
+                            )}
                           </div>
                           <div className="flex-1 min-w-0 space-y-3">
                             <div className="flex items-start justify-between gap-3">
@@ -196,7 +199,7 @@ export function ProfilePage() {
                               </h4>
                             </div>
                             <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 text-pretty">
-                              {story.excerpt}
+                              {story.description}
                             </p>
                             <div className="flex flex-wrap gap-1.5">
                               {story.tags.map((tag) => (
@@ -206,15 +209,16 @@ export function ProfilePage() {
                               ))}
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
-                              <span className="font-medium">{story.chapters} chapters</span>
+                              <span className="font-medium">{story.chapters.length} chapters</span>
                               <div className="flex items-center gap-1">
                                 <Heart className="h-3.5 w-3.5" />
-                                <span>{story.upvotes}</span>
+                                <span>{story.stats.likes}</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <MessageCircle className="h-3.5 w-3.5" />
-                                <span>{story.comments}</span>
+                                <span>{story.stats.views}</span>
                               </div>
+                              <span className="text-xs">{story.stats.totalWords} words</span>
                             </div>
                           </div>
                         </div>
@@ -235,7 +239,7 @@ export function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Upvotes</p>
-                    <p className="text-2xl font-bold mt-1">{mockUserStats.totalUpvotes.toLocaleString()}</p>
+                    <p className="text-2xl font-bold mt-1">{userStats.totalUpvotes.toLocaleString()}</p>
                   </div>
                   <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
                     <Heart className="h-5 w-5 text-red-600" />
@@ -247,7 +251,7 @@ export function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Comments</p>
-                    <p className="text-2xl font-bold mt-1">{mockUserStats.totalComments.toLocaleString()}</p>
+                    <p className="text-2xl font-bold mt-1">{userStats.totalComments.toLocaleString()}</p>
                   </div>
                   <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                     <MessageCircle className="h-5 w-5 text-blue-600" />
@@ -259,7 +263,7 @@ export function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Tips Received</p>
-                    <p className="text-2xl font-bold mt-1">{mockUserStats.totalTips.toFixed(1)} WLD</p>
+                    <p className="text-2xl font-bold mt-1">{userStats.totalTips.toFixed(1)} WLD</p>
                   </div>
                   <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
                     <DollarSign className="h-5 w-5 text-green-600" />
@@ -273,7 +277,7 @@ export function ProfilePage() {
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       Stories Published
                     </p>
-                    <p className="text-2xl font-bold mt-1">{mockUserStats.storiesPublished}</p>
+                    <p className="text-2xl font-bold mt-1">{userStats.storiesPublished}</p>
                   </div>
                   <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
                     <BookOpen className="h-5 w-5 text-purple-600" />
@@ -286,21 +290,18 @@ export function ProfilePage() {
               <h3 className="font-serif font-semibold mb-4">Engagement Overview</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">{mockUserStats.followers}</p>
+                  <p className="text-2xl font-bold text-primary">{userStats.followers}</p>
                   <p className="text-sm text-muted-foreground">Followers</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">{mockUserStats.following}</p>
+                  <p className="text-2xl font-bold text-primary">{userStats.following}</p>
                   <p className="text-sm text-muted-foreground">Following</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">
-                    {mockUserStats.totalUpvotes > 0
-                      ? Math.round((mockUserStats.totalComments / mockUserStats.totalUpvotes) * 100)
-                      : 0}
-                    %
+                    {userStats.totalWords.toLocaleString()}
                   </p>
-                  <p className="text-sm text-muted-foreground">Engagement Rate</p>
+                  <p className="text-sm text-muted-foreground">Total Words</p>
                 </div>
               </div>
             </Card>

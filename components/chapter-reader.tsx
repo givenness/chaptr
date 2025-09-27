@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { getStoryById, type StoredStory, type StoredChapter } from "@/lib/story-storage"
 
 interface ChapterReaderProps {
   storyId: string
@@ -1332,14 +1333,37 @@ Change was possible. Love was possible. And sometimes, the most powerful code yo
 export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
   const { user, verify } = useAuth()
   const router = useRouter()
-  const chapter =
-    mockChapters[storyId as keyof typeof mockChapters]?.[
-      chapterId as keyof (typeof mockChapters)[keyof typeof mockChapters]
-    ]
-  const [isUpvoted, setIsUpvoted] = useState(chapter?.isUpvoted || false)
+  const [chapter, setChapter] = useState<StoredChapter | any>(null)
+  const [story, setStory] = useState<StoredStory | any>(null)
+  const [isStoredStory, setIsStoredStory] = useState(false)
+  const [isUpvoted, setIsUpvoted] = useState(false)
   const [fontSize, setFontSize] = useState(16)
   const [showSettings, setShowSettings] = useState(false)
   const [readingProgress, setReadingProgress] = useState(0)
+
+  useEffect(() => {
+    // First try to get from localStorage (user published stories)
+    const storedStory = getStoryById(storyId)
+    if (storedStory) {
+      const storedChapter = storedStory.chapters.find(ch => ch.id === chapterId)
+      if (storedChapter) {
+        setStory(storedStory)
+        setChapter(storedChapter)
+        setIsStoredStory(true)
+        return
+      }
+    }
+
+    // Fall back to mock chapters
+    const mockChapter = mockChapters[storyId as keyof typeof mockChapters]?.[
+      chapterId as keyof (typeof mockChapters)[keyof typeof mockChapters]
+    ]
+    if (mockChapter) {
+      setChapter(mockChapter)
+      setIsStoredStory(false)
+      setIsUpvoted(mockChapter.isUpvoted || false)
+    }
+  }, [storyId, chapterId])
 
   // Track reading progress
   useEffect(() => {
@@ -1415,7 +1439,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-5 w-5" />
-            <span className="truncate max-w-32">{chapter.story.title}</span>
+            <span className="truncate max-w-32">{isStoredStory ? story?.title : chapter.story?.title}</span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -1456,43 +1480,57 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
         <div className="mb-8">
           <h1 className="text-2xl font-serif font-bold text-balance mb-2">{chapter.title}</h1>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span>by {chapter.story.author}</span>
+            <span>by {isStoredStory ? story?.authorName : chapter.story?.author}</span>
             <span>{chapter.wordCount} words</span>
-            <span>{chapter.readingTime} min read</span>
-            <span>{new Date(chapter.publishedAt).toLocaleDateString()}</span>
+            {!isStoredStory && <span>{chapter.readingTime} min read</span>}
+            <span>{new Date(isStoredStory ? chapter.createdAt : chapter.publishedAt).toLocaleDateString()}</span>
           </div>
         </div>
 
         {/* Chapter Text */}
         <div className="prose prose-lg max-w-none font-serif leading-relaxed" style={{ fontSize: `${fontSize}px` }}>
-          {chapter.content.split("\n\n").map((paragraph, index) => {
-            if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+          {isStoredStory ? (
+            // For localStorage stories, render as HTML from markdown
+            <div
+              dangerouslySetInnerHTML={{
+                __html: chapter.content
+                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                  .replace(/^> (.*$)/gm, '<blockquote style="border-left: 4px solid var(--primary); padding-left: 1rem; font-style: italic; margin: 1.5rem 0; color: var(--muted-foreground);">$1</blockquote>')
+                  .replace(/\n/g, '<br />')
+              }}
+            />
+          ) : (
+            // For mock stories, use the original formatting
+            chapter.content.split("\n\n").map((paragraph, index) => {
+              if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+                return (
+                  <h3 key={index} className="font-serif font-semibold text-xl mt-8 mb-4">
+                    {paragraph.slice(2, -2)}
+                  </h3>
+                )
+              }
+              if (paragraph.startsWith("> ")) {
+                return (
+                  <blockquote key={index} className="border-l-4 border-primary pl-4 italic my-6 text-muted-foreground">
+                    {paragraph.slice(2)}
+                  </blockquote>
+                )
+              }
+              if (paragraph.startsWith("*") && paragraph.endsWith("*")) {
+                return (
+                  <p key={index} className="text-center italic text-muted-foreground my-8">
+                    {paragraph.slice(1, -1)}
+                  </p>
+                )
+              }
               return (
-                <h3 key={index} className="font-serif font-semibold text-xl mt-8 mb-4">
-                  {paragraph.slice(2, -2)}
-                </h3>
-              )
-            }
-            if (paragraph.startsWith("> ")) {
-              return (
-                <blockquote key={index} className="border-l-4 border-primary pl-4 italic my-6 text-muted-foreground">
-                  {paragraph.slice(2)}
-                </blockquote>
-              )
-            }
-            if (paragraph.startsWith("*") && paragraph.endsWith("*")) {
-              return (
-                <p key={index} className="text-center italic text-muted-foreground my-8">
-                  {paragraph.slice(1, -1)}
+                <p key={index} className="mb-6 text-pretty">
+                  {paragraph}
                 </p>
               )
-            }
-            return (
-              <p key={index} className="mb-6 text-pretty">
-                {paragraph}
-              </p>
-            )
-          })}
+            })
+          )}
         </div>
 
         {/* Chapter Actions */}
@@ -1509,16 +1547,18 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
                   }`}
                 >
                   <Heart className={`h-4 w-4 ${isUpvoted ? "fill-current" : ""}`} />
-                  {chapter.upvotes + (isUpvoted && !chapter.isUpvoted ? 1 : 0)}
+                  {isStoredStory ? 0 : (chapter.upvotes + (isUpvoted && !chapter.isUpvoted ? 1 : 0))}
                 </button>
 
-                <Link
-                  href={`/story/${storyId}/chapter/${chapterId}/comments`}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  {chapter.comments}
-                </Link>
+                {!isStoredStory && (
+                  <Link
+                    href={`/story/${storyId}/chapter/${chapterId}/comments`}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    {chapter.comments}
+                  </Link>
+                )}
 
                 <Link
                   href={`/story/${storyId}/tip`}
@@ -1533,7 +1573,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
             {/* Navigation */}
             <div className="flex items-center justify-between pt-4 border-t border-border">
               <div className="flex-1">
-                {chapter.navigation.previousChapter && (
+                {!isStoredStory && chapter.navigation?.previousChapter && (
                   <Link
                     href={`/story/${storyId}/chapter/${chapter.navigation.previousChapter.id}`}
                     className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
@@ -1542,6 +1582,21 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
                     Previous
                   </Link>
                 )}
+                {isStoredStory && story && story.chapters.length > 1 && (
+                  (() => {
+                    const currentIndex = story.chapters.findIndex(ch => ch.id === chapterId)
+                    const previousChapter = currentIndex > 0 ? story.chapters[currentIndex - 1] : null
+                    return previousChapter ? (
+                      <Link
+                        href={`/story/${storyId}/chapter/${previousChapter.id}`}
+                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        <ArrowLeft className="h-4 w-4" />
+                        Previous
+                      </Link>
+                    ) : null
+                  })()
+                )}
               </div>
 
               <Link href={`/story/${storyId}`} className="text-sm text-muted-foreground hover:text-foreground">
@@ -1549,7 +1604,7 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
               </Link>
 
               <div className="flex-1 flex justify-end">
-                {chapter.navigation.nextChapter && (
+                {!isStoredStory && chapter.navigation?.nextChapter && (
                   <Link
                     href={`/story/${storyId}/chapter/${chapter.navigation.nextChapter.id}`}
                     className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
@@ -1557,6 +1612,21 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
                     Next
                     <ArrowRight className="h-4 w-4" />
                   </Link>
+                )}
+                {isStoredStory && story && story.chapters.length > 1 && (
+                  (() => {
+                    const currentIndex = story.chapters.findIndex(ch => ch.id === chapterId)
+                    const nextChapter = currentIndex < story.chapters.length - 1 ? story.chapters[currentIndex + 1] : null
+                    return nextChapter ? (
+                      <Link
+                        href={`/story/${storyId}/chapter/${nextChapter.id}`}
+                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        Next
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    ) : null
+                  })()
                 )}
               </div>
             </div>

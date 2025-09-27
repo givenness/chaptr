@@ -13,6 +13,7 @@ import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, Plus, X, Eye, Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { saveStory, fileToBase64 } from "@/lib/story-storage"
 
 const GENRE_OPTIONS = [
   "Romance",
@@ -74,6 +75,8 @@ export function WriteInterface() {
   })
 
   const [newTag, setNewTag] = useState("")
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null)
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null)
 
   if (!user) {
     return <AuthPrompt />
@@ -122,17 +125,84 @@ export function WriteInterface() {
     return `${readingTime} min read`
   }
 
+  const handleCoverImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file')
+        return
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB')
+        return
+      }
+
+      setCoverImageFile(file)
+
+      // Create preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setCoverImagePreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const removeCoverImage = () => {
+    setCoverImageFile(null)
+    setCoverImagePreview(null)
+  }
+
   const handlePublish = async () => {
     setIsPublishing(true)
     try {
-      // In a real app, this would call your API
-      console.log("Publishing story:", { story, chapter })
+      if (!user) {
+        alert("You must be signed in to publish")
+        return
+      }
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Convert cover image to base64 if exists
+      let coverImageBase64: string | undefined
+      if (coverImageFile) {
+        coverImageBase64 = await fileToBase64(coverImageFile)
+      }
 
+      // Save the story using our storage utility
+      const savedStory = saveStory({
+        title: story.title,
+        description: story.description,
+        tags: story.tags,
+        language: story.language,
+        coverImage: coverImageBase64,
+        authorId: user.id,
+        authorName: user.username,
+        chapterTitle: chapter.title,
+        chapterContent: chapter.content,
+        wordCount: chapter.wordCount
+      })
+
+      console.log("Story published successfully:", savedStory)
       alert("Story published successfully!")
-      router.push("/")
+
+      // Reset form
+      setStory({
+        title: "",
+        description: "",
+        tags: [],
+        language: "en",
+      })
+      setChapter({
+        title: "",
+        content: "",
+        wordCount: 0,
+      })
+      setCoverImageFile(null)
+      setCoverImagePreview(null)
+
+      router.push("/profile")
     } catch (error) {
       console.error("Publishing failed:", error)
       alert("Failed to publish story")
@@ -288,13 +358,48 @@ export function WriteInterface() {
               {/* Cover Image */}
               <div className="mini-app-element-gap">
                 <Label>Cover Image (Optional)</Label>
-                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
-                  <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground mb-2">Upload a cover image for your story</p>
-                  <Button variant="outline" size="sm">
-                    Choose File
-                  </Button>
-                </div>
+                {coverImagePreview ? (
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <img
+                        src={coverImagePreview}
+                        alt="Cover preview"
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <Button
+                        onClick={removeCoverImage}
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setCoverImageFile(null)}>
+                      Change Image
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                    <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground mb-2">Upload a cover image for your story</p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCoverImageUpload}
+                      className="hidden"
+                      id="cover-upload"
+                    />
+                    <Button variant="outline" size="sm" asChild>
+                      <label htmlFor="cover-upload" className="cursor-pointer">
+                        Choose File
+                      </label>
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Supported: JPG, PNG, GIF (max 5MB)
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
