@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { Button } from "@/components/ui/button"
 import {
   ArrowLeft,
@@ -1331,7 +1329,8 @@ Change was possible. Love was possible. And sometimes, the most powerful code yo
 }
 
 export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
-  const { user, verify } = useAuth()
+  // Mock user for chapter reader functionality
+  const mockUser = { isVerified: true }
   const router = useRouter()
   const [chapter, setChapter] = useState<StoredChapter | any>(null)
   const [story, setStory] = useState<StoredStory | any>(null)
@@ -1378,9 +1377,6 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   if (!chapter) {
     return (
@@ -1397,14 +1393,6 @@ export function ChapterReader({ storyId, chapterId }: ChapterReaderProps) {
   }
 
   const handleUpvote = async () => {
-    if (!user.isVerified) {
-      const nullifierHash = await verify("chapter-upvote")
-      if (!nullifierHash) {
-        alert("Verification required to upvote")
-        return
-      }
-    }
-
     // In real app, this would call your API
     setIsUpvoted(!isUpvoted)
   }

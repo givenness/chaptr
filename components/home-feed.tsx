@@ -6,8 +6,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Heart, MessageCircle, Clock, User, Search } from "lucide-react"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import Link from "next/link"
 
 const mockStories = [
@@ -154,13 +152,8 @@ const mockStories = [
 ]
 
 export function HomeFeed() {
-  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<"latest" | "trending">("trending")
   const [searchQuery, setSearchQuery] = useState("")
-
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   const filteredStories = mockStories.filter((story) => {
     if (!searchQuery) return true

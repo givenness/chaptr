@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, Heart, Coins, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -38,7 +36,6 @@ const isPaymentsEnabled = () => {
 }
 
 export function TipPage({ storyId }: TipPageProps) {
-  const { user, pay } = useAuth()
   const router = useRouter()
   const selectedToken = "WLD"
   const [amount, setAmount] = useState("")
@@ -46,10 +43,6 @@ export function TipPage({ storyId }: TipPageProps) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [message, setMessage] = useState("")
   const paymentsEnabled = isPaymentsEnabled()
-
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   const handlePresetAmount = (preset: number) => {
     setAmount(preset.toString())
@@ -77,26 +70,10 @@ export function TipPage({ storyId }: TipPageProps) {
     try {
       const tipAmount = getCurrentAmount()
 
-      const result = await pay({
-        to: mockStory.authorId, // In real app, this would be the author's wallet address
-        tokens: [
-          {
-            symbol: selectedToken,
-            token_amount: tipAmount.toString(),
-          },
-        ],
-        description: `Tip for "${mockStory.title}" by ${mockStory.author}`,
-        reference: `tip_${storyId}_${Date.now()}`,
-      })
-
-      if (result.status === "success") {
-        // In real app, you'd verify the transaction on your backend
-        console.log("Tip successful:", result)
-        alert(`Successfully tipped ${formatCurrency(tipAmount, selectedToken)} to ${mockStory.author}!`)
-        router.push(`/story/${storyId}`)
-      } else {
-        throw new Error("Payment failed")
-      }
+      // Simulate successful tip without actual payment processing
+      console.log("Tip simulated:", { amount: tipAmount, to: mockStory.author })
+      alert(`Successfully tipped ${formatCurrency(tipAmount, selectedToken)} to ${mockStory.author}!`)
+      router.push(`/story/${storyId}`)
     } catch (error) {
       console.error("Tip failed:", error)
       alert("Failed to process tip. Please try again.")

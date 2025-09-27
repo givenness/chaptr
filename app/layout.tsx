@@ -5,7 +5,6 @@ import { Analytics } from "@vercel/analytics/next"
 
 import "./globals.css"
 import { MobileNavigation } from "@/components/mobile-navigation"
-import { AuthProvider } from "@/components/auth-provider"
 
 export const metadata: Metadata = {
   title: "Chaptr - Stories by Verified Humans",
@@ -27,12 +26,10 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <AuthProvider>
           <main className="pb-20">
             <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
           </main>
           <MobileNavigation />
-        </AuthProvider>
         <Analytics />
       </body>
     </html>

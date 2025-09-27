@@ -4,8 +4,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { BookOpen, Heart, Clock, User } from "lucide-react"
 import Link from "next/link"
 
@@ -90,12 +88,7 @@ const mockLibraryData = {
 }
 
 export function LibraryPage() {
-  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<"reading" | "following" | "activity">("reading")
-
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   return (
     <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">

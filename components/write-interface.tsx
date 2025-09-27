@@ -8,8 +8,6 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, Plus, X, Eye, Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -53,11 +51,13 @@ interface Chapter {
 }
 
 export function WriteInterface() {
-  const { user } = useAuth()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<"story" | "chapter">("story")
   const [isPublishing, setIsPublishing] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+
+  // Mock user for writing functionality
+  const mockUser = { id: "mock_user", username: "guest_writer" }
 
   // Story state
   const [story, setStory] = useState<Story>({
@@ -78,9 +78,6 @@ export function WriteInterface() {
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null)
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null)
 
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   const addTag = () => {
     if (newTag.trim() && !story.tags.includes(newTag.trim()) && story.tags.length < 5) {
@@ -159,26 +156,21 @@ export function WriteInterface() {
   const handlePublish = async () => {
     setIsPublishing(true)
     try {
-      if (!user) {
-        alert("You must be signed in to publish")
-        return
-      }
-
       // Convert cover image to base64 if exists
       let coverImageBase64: string | undefined
       if (coverImageFile) {
         coverImageBase64 = await fileToBase64(coverImageFile)
       }
 
-      // Save the story using our storage utility
+      // Save the story using our storage utility with mock user
       const savedStory = saveStory({
         title: story.title,
         description: story.description,
         tags: story.tags,
         language: story.language,
         coverImage: coverImageBase64,
-        authorId: user.id,
-        authorName: user.username,
+        authorId: mockUser.id,
+        authorName: mockUser.username,
         chapterTitle: chapter.title,
         chapterContent: chapter.content,
         wordCount: chapter.wordCount

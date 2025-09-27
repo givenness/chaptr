@@ -4,8 +4,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, User, Heart, MessageCircle, DollarSign, Shield, Share, BookOpen } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -380,14 +378,10 @@ const mockAuthors = {
 }
 
 export function AuthorProfile({ authorId }: AuthorProfileProps) {
-  const { user } = useAuth()
   const router = useRouter()
   const author = mockAuthors[authorId as keyof typeof mockAuthors]
   const [isFollowing, setIsFollowing] = useState(false)
 
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   if (!author) {
     return (

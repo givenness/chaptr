@@ -4,8 +4,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, Heart, MessageCircle, Send, Flag } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -63,33 +61,23 @@ const mockChapter = {
 }
 
 export function CommentsPage({ storyId, chapterId }: CommentsPageProps) {
-  const { user, verify } = useAuth()
+  // Mock user for comments functionality
+  const mockUser = { username: "guest_commenter", isVerified: true }
   const router = useRouter()
   const [comments, setComments] = useState(mockComments)
   const [newComment, setNewComment] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   const handleSubmitComment = async () => {
     if (!newComment.trim()) return
-
-    if (!user.isVerified) {
-      const nullifierHash = await verify("comment-post")
-      if (!nullifierHash) {
-        alert("Verification required to post comments")
-        return
-      }
-    }
 
     setIsSubmitting(true)
     try {
       // In real app, this would call your API
       const comment = {
         id: Date.now().toString(),
-        user: user.username,
+        user: mockUser.username,
         content: newComment.trim(),
         timeAgo: "now",
         likes: 0,

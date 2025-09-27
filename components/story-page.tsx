@@ -4,8 +4,6 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { ArrowLeft, Heart, MessageCircle, DollarSign, User, BookOpen, Share } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -540,7 +538,6 @@ const mockStories = {
 }
 
 export function StoryPage({ storyId }: StoryPageProps) {
-  const { user } = useAuth()
   const router = useRouter()
   const [story, setStory] = useState<StoredStory | any>(null)
   const [isStoredStory, setIsStoredStory] = useState(false)
@@ -565,9 +562,6 @@ export function StoryPage({ storyId }: StoryPageProps) {
     }
   }, [storyId])
 
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   if (!story) {
     return (

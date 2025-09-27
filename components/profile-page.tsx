@@ -4,8 +4,6 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { User, BookOpen, Heart, MessageCircle, DollarSign, Shield, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { getUserStories, deleteStory, type StoredStory } from "@/lib/story-storage"
@@ -48,34 +46,33 @@ const mockStories = [
 ]
 
 export function ProfilePage() {
-  const { user, logout } = useAuth()
+  // Mock user for demo purposes
+  const mockUser = {
+    id: "demo_user",
+    username: "demo_writer",
+    walletAddress: "0x1234567890abcdef",
+    isVerified: true
+  }
+
   const [activeTab, setActiveTab] = useState<"stories" | "stats" | "settings">("stories")
   const [userStories, setUserStories] = useState<StoredStory[]>([])
 
   useEffect(() => {
-    if (user) {
-      const stories = getUserStories(user.id)
-      setUserStories(stories)
-    }
-  }, [user])
+    const stories = getUserStories(mockUser.id)
+    setUserStories(stories)
+  }, [])
 
   const handleDeleteStory = (storyId: string, storyTitle: string) => {
     if (window.confirm(`Are you sure you want to delete "${storyTitle}"? This action cannot be undone.`)) {
       const success = deleteStory(storyId)
       if (success) {
         // Refresh the stories list
-        if (user) {
-          const updatedStories = getUserStories(user.id)
-          setUserStories(updatedStories)
-        }
+        const updatedStories = getUserStories(mockUser.id)
+        setUserStories(updatedStories)
       } else {
         alert('Failed to delete story. Please try again.')
       }
     }
-  }
-
-  if (!user) {
-    return <AuthPrompt />
   }
 
   const userStats = {
@@ -101,8 +98,8 @@ export function ProfilePage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <h2 className="text-xl font-sans font-semibold">{user.username}</h2>
-                  {user.isVerified && (
+                  <h2 className="text-xl font-sans font-semibold">{mockUser.username}</h2>
+                  {mockUser.isVerified && (
                     <div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded-full">
                       <Shield className="h-3 w-3 text-primary" />
                       <span className="text-xs text-primary font-medium">Verified</span>
@@ -342,10 +339,10 @@ export function ProfilePage() {
                   <div>
                     <h4 className="font-medium">World ID Verification</h4>
                     <p className="text-sm text-muted-foreground">
-                      {user.isVerified ? "Your account is verified" : "Verify your humanity to publish stories"}
+                      {mockUser.isVerified ? "Your account is verified" : "Verify your humanity to publish stories"}
                     </p>
                   </div>
-                  {!user.isVerified && <Button size="sm">Verify Now</Button>}
+                  {!mockUser.isVerified && <Button size="sm">Verify Now</Button>}
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -375,8 +372,8 @@ export function ProfilePage() {
                 <CardTitle className="text-lg font-sans">Danger Zone</CardTitle>
               </CardHeader>
               <CardContent className="mini-app-element-gap">
-                <Button onClick={logout} variant="outline" className="w-full bg-transparent">
-                  Sign Out
+                <Button variant="outline" className="w-full bg-transparent" disabled>
+                  Sign Out (Demo Mode)
                 </Button>
                 <Button variant="destructive" className="w-full">
                   Delete Account

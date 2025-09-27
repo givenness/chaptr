@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/components/auth-provider"
-import { AuthPrompt } from "@/components/auth-prompt"
 import { Search, Filter, TrendingUp, Clock, Heart, MessageCircle, DollarSign, User } from "lucide-react"
 import Link from "next/link"
 import { formatCurrencyShort } from "@/lib/currency"
@@ -119,16 +117,12 @@ const mockDiscoverData = {
 }
 
 export function DiscoverPage() {
-  const { user } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedGenre, setSelectedGenre] = useState("All")
   const [selectedLanguage, setSelectedLanguage] = useState("all")
   const [activeTab, setActiveTab] = useState<"trending" | "featured" | "search">("trending")
   const [showFilters, setShowFilters] = useState(false)
 
-  if (!user) {
-    return <AuthPrompt />
-  }
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
