@@ -215,8 +215,8 @@ export function WriteInterface() {
     chapter.wordCount >= 100
 
   return (
-    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
-      <div className="max-w-2xl mx-auto mini-app-padding pt-6">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom page-transition">
+      <div className="max-w-2xl mx-auto mini-app-padding pt-6 content-fade-in">
         {/* Action buttons */}
         <div className="flex items-center justify-between mini-app-header-gap">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">

@@ -80,8 +80,8 @@ export function LibraryPage() {
   const [activeTab, setActiveTab] = useState<"reading" | "following" | "activity">("reading")
 
   return (
-    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
-      <div className="max-w-2xl mx-auto mini-app-padding pt-6">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom page-transition">
+      <div className="max-w-2xl mx-auto mini-app-padding pt-6 content-fade-in">
         {/* Tabs */}
         <div className="flex gap-2 mini-app-header-gap">
           <Button

@@ -572,7 +572,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
 
   if (!story) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center page-transition">
         <div className="text-center">
           <h1 className="text-2xl font-sans font-bold mb-2">Story Not Found</h1>
           <p className="text-muted-foreground mb-4">The story you're looking for doesn't exist.</p>
@@ -600,7 +600,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background page-transition">
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
         <div className="flex items-center justify-between p-4">
@@ -614,7 +614,7 @@ export function StoryPage({ storyId }: StoryPageProps) {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-4 py-6 content-fade-in">
         {/* Story Header */}
         <div className="flex gap-4 mb-6">
           {story.coverImage ? (

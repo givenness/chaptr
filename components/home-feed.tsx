@@ -175,8 +175,8 @@ export function HomeFeed() {
   })
 
   return (
-    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
-      <div className="max-w-2xl mx-auto mini-app-padding pt-6">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom page-transition">
+      <div className="max-w-2xl mx-auto mini-app-padding pt-6 content-fade-in">
         <div className="relative mini-app-header-gap">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input

@@ -74,8 +74,8 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom">
-      <div className="max-w-2xl mx-auto mini-app-padding pt-6">
+    <div className="min-h-screen bg-background mini-app-nav-spacing safe-area-bottom page-transition">
+      <div className="max-w-2xl mx-auto mini-app-padding pt-6 content-fade-in">
         {/* Profile Header */}
         <Card className="mini-app-header-gap">
           <CardContent className="mini-app-padding">

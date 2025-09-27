@@ -264,4 +264,88 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 12px oklch(from var(--foreground) l c h / 0.1);
   }
+
+  /* Page transitions */
+  .page-transition {
+    animation: fadeInUp 0.3s ease-out;
+  }
+
+  .page-transition-fast {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Smooth content loading */
+  .content-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .content-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  /* Enhanced loading states */
+  .skeleton {
+    background: linear-gradient(90deg,
+      var(--muted) 25%,
+      oklch(from var(--muted) calc(l + 0.02) c h) 50%,
+      var(--muted) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Smooth link transitions */
+  a {
+    transition: all 0.2s ease;
+  }
+
+  /* Enhanced button transitions */
+  button {
+    transition: all 0.2s ease;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
 }
