@@ -191,7 +191,7 @@ export function HomeFeed() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '48px' }}>
+      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '24px' }}>
         <div className="relative mini-app-header-gap">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input

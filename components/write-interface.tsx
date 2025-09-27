@@ -228,7 +228,7 @@ export function WriteInterface() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '48px' }}>
+      <div className="max-w-2xl mx-auto mini-app-padding" style={{ marginTop: '24px' }}>
         {/* Action buttons */}
         <div className="flex items-center justify-between mini-app-header-gap">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
