@@ -94,7 +94,6 @@ A World Mini App for user‑generated serialized fiction: verified authors publi
 ## Support
 
 - **Documentation**: [Worldcoin MiniKit Docs](https://docs.worldcoin.org/minikit)
-- **Community**: [Worldcoin Discord](https://discord.gg/worldcoin)
 - **Issues**: [GitHub Issues](https://github.com/username/chaptr-app/issues)
 
 ---
